@@ -42,13 +42,17 @@ start:
     
 
     ; Habilitar A20
+    call habilitar_A20      ;Ravioli
     
     ; Cargar la GDT
+    
 
     ; Setear el bit PE del registro CR0
     
     ; Saltar a modo protegido
-
+    jmp 0x08:modoprotegido
+BITS 32
+    modoprotegido:
     ; Establecer selectores de segmentos
 
     ; Establecer la base de la pila
