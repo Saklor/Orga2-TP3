@@ -29,10 +29,18 @@
 #define GDT_COUNT 6
 
 #define GDT_IDX_NULL_DESC           0
+#define GDT_IDX_COD_LVL0            1
+#define GDT_IDX_COD_LVL3            2
+#define GDT_IDX_DATA_LVL0           3
+#define GDT_IDX_DATA_LVL3           4
 
 /* Offsets en la gdt */
 /* -------------------------------------------------------------------------- */
 #define GDT_OFF_NULL_DESC           (GDT_IDX_NULL_DESC      << 3)
+#define GDT_OFF_COD_LVL0            (GDT_IDX_COD_LVL0       << 3)
+#define GDT_OFF_COD_LVL3            (GDT_IDX_COD_LVL3       << 3)
+#define GDT_OFF_DATA_LVL0           (GDT_IDX_DATA_LVL0      << 3)
+#define GDT_OFF_DATA_LVL3           (GDT_IDX_DATA_LVL3      << 3)
 
 /* Direcciones de memoria */
 /* -------------------------------------------------------------------------- */
