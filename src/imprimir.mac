@@ -66,7 +66,7 @@
         add     ebx, 2          ; Avanzar el puntero de la memoria de video
         inc     edi             ; Avanzar el puntero de la cadena
         loop    %%ciclo_cadena
-
+        
     popad
 %endmacro
 

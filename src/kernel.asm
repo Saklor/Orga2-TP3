@@ -59,11 +59,15 @@ BITS 32
     modoprotegido:
     ; Establecer selectores de segmentos
     xor eax, eax
+    
     mov ax, 0x18
-    mov ds, ax      ;RAVIOLI
     mov es, ax      ;RAVIOLI
     mov gs, ax      ;RAVIOLI
+    mov ds, ax      ;RAVIOLI
+    mov ss, ax      ;RAVIOLI
 
+    mov ax, 0x28
+    mov fs, ax      ;RAVIOLI
 
     ; Establecer la base de la pila
     mov esp, 0x27000

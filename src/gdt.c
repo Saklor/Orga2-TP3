@@ -53,7 +53,7 @@ gdt_entry gdt[GDT_COUNT] = {
         (unsigned char)     0x00,           /* base[23:16]  */
         (unsigned char)     0x0A,           /* type =  Code Execute/Read */
         (unsigned char)     0x01,           /* s            */
-        (unsigned char)     0x00,           /* dpl          */
+        (unsigned char)     0x03,           /* dpl          */
         (unsigned char)     0x01,           /* p            */
         (unsigned char)     0x03,           /* limit[16:19] */
         (unsigned char)     0x01,           /* avl          */
@@ -65,7 +65,7 @@ gdt_entry gdt[GDT_COUNT] = {
 
     /* Descriptor Data privilegio 00*/
     /* Offset = 0x18 */
-    [GDT_IDX_DATA_LVL3] = (gdt_entry) {
+    [GDT_IDX_DATA_LVL0] = (gdt_entry) {
         (unsigned short)    0x6E00,         /* limit[0:15]  */
         (unsigned short)    0x0000,         /* base[0:15]   */
         (unsigned char)     0x00,           /* base[23:16]  */
@@ -87,6 +87,24 @@ gdt_entry gdt[GDT_COUNT] = {
         (unsigned short)    0x6E00,         /* limit[0:15]  */
         (unsigned short)    0x0000,         /* base[0:15]   */
         (unsigned char)     0x00,           /* base[23:16]  */
+        (unsigned char)     0x02,           /* type = Data Read/Write */
+        (unsigned char)     0x01,           /* s            */
+        (unsigned char)     0x03,           /* dpl          */
+        (unsigned char)     0x01,           /* p            */
+        (unsigned char)     0x03,           /* limit[16:19] */
+        (unsigned char)     0x01,           /* avl          */
+        (unsigned char)     0x00,           /* l            */
+        (unsigned char)     0x01,           /* db           */
+        (unsigned char)     0x01,           /* g            */
+        (unsigned char)     0x00,           /* base[31:24]  */
+    },
+
+    /* Descriptor Data Video*/
+    /* Offset = 0x28 */
+    [GDT_IDX_DATA_VID] = (gdt_entry) {
+        (unsigned short)    0x6E00,         /* limit[0:15]  */
+        (unsigned short)    0x8000,         /* base[0:15]   */
+        (unsigned char)     0x0B,           /* base[23:16]  */
         (unsigned char)     0x02,           /* type = Data Read/Write */
         (unsigned char)     0x01,           /* s            */
         (unsigned char)     0x00,           /* dpl          */
