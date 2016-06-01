@@ -26,7 +26,9 @@ global _isr%1
 
 _isr%1:
     mov eax, %1
+    imprimir_texto_mp se_rompio_todo_msg, se_rompio_todo_len, 0x40, 0, 0
     jmp $
+    iret
 
 %endmacro
 
@@ -37,10 +39,27 @@ _isr%1:
 isrnumero:           dd 0x00000000
 isrClock:            db '|/-\'
 
+;Interrupcions
+se_rompio_todo_msg db     'Se rompio todo. Excepcion (0xFF)'    ;Completar para que diga el numero de excepcion
+se_rompio_todo_len equ    $ - se_rompio_todo_msg
+
 ;;
 ;; Rutina de atención de las EXCEPCIONES
 ;; -------------------------------------------------------------------------- ;;
-ISR 0
+ISR 0   ;Divison Error
+ISR 1   ;Divison Error
+;ISR 2   ;Divison Error
+;ISR 3   ;Divison Error
+;ISR 4   ;Divison Error
+;ISR 5   ;Divison Error
+;ISR 6   ;Divison Error
+;ISR 7   ;Divison Error
+;ISR 8   ;Divison Error
+;ISR 9   ;Divison Error
+;ISR 10   ;Divison Error
+;ISR 11   ;Divison Error
+;ISR 12   ;Divison Error
+ISR 13   ;Divison Error
 
 ;;
 ;; Rutina de atención del RELOJ

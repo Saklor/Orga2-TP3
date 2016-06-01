@@ -7,6 +7,9 @@
 
 global start
 extern GDT_DESC
+extern IDT_DESC
+extern idt_inicializar
+extern mmu_inicialiar_dir_kernel
 
 ;; Saltear seccion de datos
 jmp start
@@ -49,7 +52,7 @@ start:
 
     ; Setear el bit PE del registro CR0
     mov eax, cr0
-    or eax, 1
+    or al, 1
     mov cr0, eax
 
     ; Saltar a modo protegido
@@ -76,15 +79,28 @@ BITS 32
     imprimir_texto_mp iniciando_mp_msg, iniciando_mp_len, 0x07, 0, 0
 
     ; Inicializar pantalla
-    
+    ;mov eax, 50     ;eax = filas
+    ;mov ebx, 80     ;ebx = columnas
+    ;imul ebx        ;eax = filas * columnas
+
+    call pintar_pantalla
+
     ; Inicializar el manejador de memoria
- 
+
     ; Inicializar el directorio de paginas
-    
+    call mmu_inicialiar_dir_kernel
+
     ; Cargar directorio de paginas
+    
 
     ; Habilitar paginacion
-    
+    ;mov eax, page_directory
+    ;mov cr3, eax
+
+    ;mov eax, cr0
+    ;or eax, 0x80000000
+    ;mov cr0, eax
+
     ; Inicializar tss
 
     ; Inicializar tss de la tarea Idle
@@ -92,14 +108,17 @@ BITS 32
     ; Inicializar el scheduler
 
     ; Inicializar la IDT
+    call idt_inicializar
     
     ; Cargar IDT
- 
+    lidt [IDT_DESC]
+
     ; Configurar controlador de interrupciones
 
     ; Cargar tarea inicial
 
     ; Habilitar interrupciones
+    sti
 
     ; Saltar a la primera tarea: Idle
 
@@ -111,6 +130,26 @@ BITS 32
     jmp $
     jmp $
 
+pintar_pantalla:
+    ;al = color
+    ;edi = fila_inicio
+    ;esi = col_inicio
+    ;edx = cant_fila
+    ;ecx = cant_col
+
+    xor eax, eax
+    mov ax, 0x7000
+    mov ecx, 4000
+    mov ebx, 0xb8000
+    .limpiar_pantalla:
+        cmp ecx, 400
+        jg .limpiar_pantala_continuar
+            mov ax, 0x0F00
+        .limpiar_pantala_continuar:
+        mov [ebx], ax
+        add ebx, 2
+    loop .limpiar_pantalla
+ret
 ;; -------------------------------------------------------------------------- ;;
 
 %include "a20.asm"
