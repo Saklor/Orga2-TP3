@@ -86,6 +86,7 @@ BITS 32
     call pintar_pantalla
 
     ; Inicializar el manejador de memoria
+    ;call mmu_inicializar
 
     ; Inicializar el directorio de paginas
     call mmu_inicialiar_dir_kernel
