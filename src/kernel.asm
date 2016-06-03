@@ -23,6 +23,9 @@ iniciando_mr_len equ    $ - iniciando_mr_msg
 iniciando_mp_msg db     'Iniciando kernel (Modo Protegido)...'
 iniciando_mp_len equ    $ - iniciando_mp_msg
 
+nombre_grupo_msg db     'No guardes nunca en la cabeza aquello que te quepa en el bolsillo'
+nombre_grupo_len equ    $ - nombre_grupo_msg
+
 ;;
 ;; Seccion de código.
 ;; -------------------------------------------------------------------------- ;;
@@ -84,6 +87,7 @@ BITS 32
     ;imul ebx        ;eax = filas * columnas
 
     call pintar_pantalla
+    imprimir_texto_mp nombre_grupo_msg, nombre_grupo_len, 0x0E, 0, 80 - nombre_grupo_len
 
     ; Inicializar el manejador de memoria
     ;call mmu_inicializar
@@ -92,15 +96,13 @@ BITS 32
     call mmu_inicialiar_dir_kernel
 
     ; Cargar directorio de paginas
-    
+    mov eax, 0x27000
+    mov cr3, eax
 
     ; Habilitar paginacion
-    ;mov eax, page_directory
-    ;mov cr3, eax
-
-    ;mov eax, cr0
-    ;or eax, 0x80000000
-    ;mov cr0, eax
+    mov eax, cr0
+    or eax, 0x80000000
+    mov cr0, eax
 
     ; Inicializar tss
 
@@ -137,11 +139,16 @@ pintar_pantalla:
     ;esi = col_inicio
     ;edx = cant_fila
     ;ecx = cant_col
-
     xor eax, eax
-    mov ax, 0x7000
-    mov ecx, 4000
     mov ebx, 0xb8000
+    mov ecx, 80
+    .limpiar_primera_linea:
+        mov [ebx], ax
+        add ebx, 2
+    loop .limpiar_primera_linea
+
+    mov ax, 0x7000
+    mov ecx, (4000 - 80)
     .limpiar_pantalla:
         cmp ecx, 400
         jg .limpiar_pantala_continuar

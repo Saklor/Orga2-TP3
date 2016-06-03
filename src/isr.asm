@@ -26,7 +26,7 @@ global _isr%1
 
 _isr%1:
     mov eax, %1
-    imprimir_texto_mp se_rompio_todo_msg, se_rompio_todo_len, 0x40, 0, 0
+    imprimir_texto_mp se_rompio_todo_msg, se_rompio_todo_len, 0x40, 1, 0
     jmp $
     iret
 

@@ -14,39 +14,42 @@
 #include "game.h"
 
 typedef struct str_pdt_entry {
-    unsigned int 	dir_base:20;
-    unsigned char  	disponibles:3;
-    
-    unsigned char   g:1;
-    unsigned char   ps:1;
-    unsigned char   ignored:1;
-    unsigned char   a:1;
-    unsigned char   pcd:1;
-    unsigned char   pwt:1;
-    unsigned char   u_s:1;
-    unsigned char   r_w:1;
     unsigned char   p:1;
+    unsigned char   r_w:1;
+    unsigned char   u_s:1;
+    unsigned char   pwt:1;
+    unsigned char   pcd:1;
+    unsigned char   a:1;
+    unsigned char   ignored:1;
+    unsigned char   ps:1;
+    unsigned char   g:1;
+    
+    unsigned char   disponibles:3;
+    unsigned int    dir_base:20;
     
 } __attribute__((__packed__)) pdt_entry;
 
 typedef struct str_pte_entry {
-    unsigned int 	dir_base:20;
-    unsigned char  	disponibles:3;
-    
-    unsigned char   g:1;
-    unsigned char   pat:1;
-    unsigned char   d:1;
-    unsigned char   a:1;
-    unsigned char   pcd:1;
-    unsigned char   pwt:1;
-    unsigned char   u_s:1;
-    unsigned char   r_w:1;
     unsigned char   p:1;
+    unsigned char   r_w:1;
+    unsigned char   u_s:1;
+    unsigned char   pwt:1;
+    unsigned char   pcd:1;
+    unsigned char   a:1;
+    unsigned char   d:1;
+    unsigned char   pat:1;
+    unsigned char   g:1;
+    
+    unsigned char   disponibles:3;
+    unsigned int 	dir_base:20;
     
 } __attribute__((__packed__)) pte_entry;
 
 void mmu_inicializar();
+unsigned int mmu_proxima_pagina_fisica_libre();
 void mmu_inicialiar_dir_kernel();
+
+void mmu_mapear_pagina(unsigned int virtualaddr, unsigned int cr3, unsigned int fisicaaddr);
 
 #endif	/* !__MMU_H__ */
 
