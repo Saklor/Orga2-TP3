@@ -77,7 +77,7 @@ BITS 32
 
     ; Establecer la base de la pila
     mov esp, 0x27000
-
+    
     ; Imprimir mensaje de bienvenida
     imprimir_texto_mp iniciando_mp_msg, iniciando_mp_len, 0x07, 0, 0
 
