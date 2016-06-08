@@ -8,6 +8,7 @@
 #include "defines.h"
 #include "idt.h"
 #include "isr.h"
+#include "screen.h"
 
 #include "tss.h"
 
@@ -46,4 +47,53 @@ void idt_inicializar() {
     IDT_ENTRY(1);
 
     IDT_ENTRY(13);
+
+    IDT_ENTRY(32);
+    idt[32].attr = (unsigned short) 0x8E00;
+    IDT_ENTRY(33);
+    idt[33].attr = (unsigned short) 0x8E00;
+
+    IDT_ENTRY(66);
+}
+
+char manejo_teclado(char scanCode){
+    char valor;
+
+    if(scanCode == 0x2a){
+        valor = '1';    
+    }
+    if(scanCode == 0x36){
+        valor = '2';    
+    }
+    if(scanCode == 0x1f){
+        valor = 's';    
+    }
+    //1e (A), 1f (S), 20 
+    if(scanCode == 0x1e){
+        valor = 'a';    
+    }
+    if(scanCode == 0x20){
+        valor = 'd';
+    }
+    if(scanCode == 0x11){
+        valor = 'w';
+    }
+    //24 (J), 25 (K), 26 (L)
+    if(scanCode ==0x17 ){
+        valor = 'i';    
+    }
+    if(scanCode == 0x24){
+        valor = 'j';    
+    }
+    if(scanCode == 0x25){
+        valor ='k' ;    
+    }
+    if(scanCode == 0x26 ){
+        valor = 'l';    
+    }
+
+    short ayylmao = (short) valor;
+
+    print((char *)&ayylmao,79 ,0,(unsigned short)0x0E);
+    return valor;
 }

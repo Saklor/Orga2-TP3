@@ -9,7 +9,10 @@ global start
 extern GDT_DESC
 extern IDT_DESC
 extern idt_inicializar
+extern mmu_inicializar
 extern mmu_inicialiar_dir_kernel
+extern resetear_pic
+extern habilitar_pic
 
 ;; Saltear seccion de datos
 jmp start
@@ -90,7 +93,7 @@ BITS 32
     imprimir_texto_mp nombre_grupo_msg, nombre_grupo_len, 0x0E, 0, 80 - nombre_grupo_len
 
     ; Inicializar el manejador de memoria
-    ;call mmu_inicializar
+    call mmu_inicializar
 
     ; Inicializar el directorio de paginas
     call mmu_inicialiar_dir_kernel
@@ -117,6 +120,8 @@ BITS 32
     lidt [IDT_DESC]
 
     ; Configurar controlador de interrupciones
+    call resetear_pic
+    call habilitar_pic
 
     ; Cargar tarea inicial
 

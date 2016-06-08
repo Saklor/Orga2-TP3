@@ -48,8 +48,10 @@ typedef struct str_pte_entry {
 void mmu_inicializar();
 unsigned int mmu_proxima_pagina_fisica_libre();
 void mmu_inicialiar_dir_kernel();
+void mmu_inicialiar_dir_tarea(unsigned int dir_codigo, short pos_x, short pos_y, short target_x, short target_y);
 
 void mmu_mapear_pagina(unsigned int virtualaddr, unsigned int cr3, unsigned int fisicaaddr);
+void mmu_unmapear_pagina(unsigned int virtualaddr, unsigned int cr3);
 
 #endif	/* !__MMU_H__ */
 

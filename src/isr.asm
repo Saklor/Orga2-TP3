@@ -6,6 +6,7 @@
 
 %include "imprimir.mac"
 
+
 BITS 32
 
 sched_tarea_offset:     dd 0x00
@@ -16,7 +17,8 @@ extern fin_intr_pic1
 
 ;; Sched
 extern sched_proximo_indice
-
+;;Manejo del teclado
+extern manejo_teclado
 ;;
 ;; Definición de MACROS
 ;; -------------------------------------------------------------------------- ;;
@@ -64,11 +66,33 @@ ISR 13   ;Divison Error
 ;;
 ;; Rutina de atención del RELOJ
 ;; -------------------------------------------------------------------------- ;;
+global _isr32
+_isr32:
+pushad
+    call proximo_reloj
 
+    call fin_intr_pic1
+popad
+iret
 ;;
 ;; Rutina de atención del TECLADO
 ;; -------------------------------------------------------------------------- ;;
+global _isr33
+extern manejo_keyboard
 
+_isr33:
+pushad
+    xor edi,edi
+    xor eax,eax
+    in al, 0x60
+    
+    push eax
+    call manejo_teclado
+    pop eax
+
+    call fin_intr_pic1
+popad
+iret
 ;;
 ;; Rutinas de atención de las SYSCALLS
 ;; -------------------------------------------------------------------------- ;;
@@ -79,6 +103,14 @@ ISR 13   ;Divison Error
 
 %define VIRUS_ROJO 0x841
 %define VIRUS_AZUL 0x325
+
+global _isr66
+_isr66:
+pushad
+    mov eax, 0x42
+    call fin_intr_pic1
+popad
+iret
 
 
 ;; Funciones Auxiliares
