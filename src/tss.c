@@ -11,4 +11,8 @@ tss tss_inicial;
 tss tss_idle;
 
 void tss_inicializar() {
+	//completar tss_inicial;
+
+	//completar tss_idle;
+
 }
