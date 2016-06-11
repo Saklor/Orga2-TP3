@@ -151,7 +151,6 @@ BITS 32
     mov dword [0x11c0000], eax
 
     ;Chequeo de funcionamiento de mmu_inicializar_dir_tarea
-    ;Lo que haria falta para probar bien es cargar en cierto 
     call mmu_inicializar_dir_tarea
 
     ; Ciclar infinitamente (por si algo sale mal...)
