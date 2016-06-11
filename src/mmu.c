@@ -79,6 +79,9 @@ unsigned int mmu_inicializar_dir_tarea(unsigned int dir_codigo, short pos_x, sho
 	pdt_entry* pdt = (pdt_entry*) mmu_proxima_pagina_fisica_libre();
 	int i;
 	unsigned int cacho_codigo;
+	unsigned int cr3;
+
+	cr3 = rcr3();
 
 	for (i = 0; i < 1024; i++) {
 		pdt[i] = (pdt_entry) {
@@ -96,14 +99,19 @@ unsigned int mmu_inicializar_dir_tarea(unsigned int dir_codigo, short pos_x, sho
 	    };
 	}
 
-	unsigned int* copiar_codigo = (unsigned int*) ( 0x40000 + (pos_x * 2) + (pos_y * 160) );
+	unsigned int* copiar_codigo = (unsigned int*) ( 0x400000 + (pos_x * 0x1000) + (pos_y * 0x80000) );
+	mmu_mapear_pagina( (unsigned int) copiar_codigo, cr3, (unsigned int) copiar_codigo);
 
 	for(i = 0; i < 1024; i++){
 		cacho_codigo = *((unsigned int*) dir_codigo);
 		*copiar_codigo = cacho_codigo;
-		dir_codigo += 4;
-		copiar_codigo += 4;
+		dir_codigo += 4;	//Aca suma 4 porque es un unsigned int, no un puntero, entonces hay que sumarle 4 bytes
+		copiar_codigo += 1; //Aca suma 1 porque avanza lo que seria un unsigned int = 32 bits = 4 bytes
 	}
+
+	copiar_codigo = (unsigned int*) ( 0x400000 + (pos_x * 0x1000) + (pos_y * 0x80000) );
+	
+	mmu_unmapear_pagina( (unsigned int) copiar_codigo, cr3);
 
 	mmu_mapear_pagina(0x08000000, (unsigned int) pdt, (unsigned int) copiar_codigo);
 	mmu_mapear_pagina(0x08001000, (unsigned int) pdt, (unsigned int) copiar_codigo);
@@ -174,15 +182,19 @@ void mmu_unmapear_pagina(unsigned int virtualaddr, unsigned int cr3){
 
     //unsigned long * pd = (unsigned long *)0x00027000;
 
-    pdte = (pdt_entry*) ( ( cr3 & 0xFFC00000 ) + (pd_offset * 4));		//RAVIOLI
+    pdte = (pdt_entry*) ( (unsigned int) ( cr3 & 0xFFFFFC00 ) + (unsigned int) (pd_offset * 4));		//RAVIOLI
 
 
     //unsigned long * pt = ((unsigned long *)(pdte->base)) + (0x1000 * );
-    pte_entry* ptee = (pte_entry*) (pdte->dir_base << 12) + (pt_index * 4);		//RAVIOLI
+    pte_entry* ptee = (pte_entry*) ((unsigned int)(pdte->dir_base << 12) + (unsigned int)(pt_index * 4));		//RAVIOLI
     
-    ptee->p = 0x00;
-    ptee->r_w = 0x00;
-    ptee->dir_base = 0x00000000;
+    ptee->p = (unsigned char) 0x00;
+    ptee->r_w = (unsigned char) 0x00;
+    ptee->dir_base = (unsigned int) 0x00000000;
+
+    // ptee->p = 0x00;
+    // ptee->r_w = 0x00;
+    // ptee->dir_base = 0x00000000;
     //ayy lmao
 
     tlbflush();

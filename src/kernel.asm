@@ -13,6 +13,7 @@ extern mmu_inicializar
 extern mmu_inicializar_dir_kernel
 extern mmu_inicializar_dir_tarea
 extern mmu_mapear_pagina
+extern mmu_unmapear_pagina
 extern resetear_pic
 extern habilitar_pic
 
@@ -132,26 +133,48 @@ BITS 32
 
     ; Saltar a la primera tarea: Idle
 
+
+
+
     ;Chequeo de funcionamiento de mmu_mapear_pagina
     ;Esto aca da excepcion de Page Fault
-    mov eax, 0x12345678
-    mov dword [0x11c0000], eax
+    ; mov al, 0x12
+    ; mov [0x400000], al
 
-    xor eax, eax
-    mov eax, cr3
+    ; xor eax, eax
+    ; mov eax, cr3
 
-    push 0x11c0000
-    push eax
-    push 0x11c0000
+    ; push 0x400000
+    ; push eax
+    ; push 0x400000
 
-    call mmu_mapear_pagina
+    ; call mmu_mapear_pagina
 
     ;Esto aca no da excepcion
-    mov eax, 0x12345678
-    mov dword [0x11c0000], eax
+    ; mov al, 0x12
+    ; mov [0x400000], al
 
     ;Chequeo de funcionamiento de mmu_inicializar_dir_tarea
-    call mmu_inicializar_dir_tarea
+    ; push 1
+    ; push 0
+    ; push 0x13000
+    ; call mmu_inicializar_dir_tarea
+    ; push eax
+
+    ; mov ebx, $
+    ; push ebx
+    ; push eax
+    ; push ebx
+    ; call mmu_mapear_pagina
+    ; pop ebx
+    ; pop eax
+    ; pop ebx
+
+    ; xchg bx,bx
+    ; pop eax
+    ; mov cr3, eax
+    ; mov esp, 0x08001000
+    ; jmp 0x08000000
 
     ; Ciclar infinitamente (por si algo sale mal...)
     mov eax, 0xFFFF
