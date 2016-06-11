@@ -53,7 +53,7 @@ LS_INLINE unsigned int syscall_mapear(int x, int y) {
     return ret;
 }
 
-LS_INLINE unsigned int syscall_donde(int* a) {
+LS_INLINE unsigned int syscall_donde(short int* a) {
     int ret;
 
     //asm(".intel_syntax noprefix");

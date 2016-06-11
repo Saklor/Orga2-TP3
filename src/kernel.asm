@@ -10,7 +10,9 @@ extern GDT_DESC
 extern IDT_DESC
 extern idt_inicializar
 extern mmu_inicializar
-extern mmu_inicialiar_dir_kernel
+extern mmu_inicializar_dir_kernel
+extern mmu_inicializar_dir_tarea
+extern mmu_mapear_pagina
 extern resetear_pic
 extern habilitar_pic
 
@@ -96,7 +98,7 @@ BITS 32
     call mmu_inicializar
 
     ; Inicializar el directorio de paginas
-    call mmu_inicialiar_dir_kernel
+    call mmu_inicializar_dir_kernel
 
     ; Cargar directorio de paginas
     mov eax, 0x27000
@@ -129,6 +131,26 @@ BITS 32
     sti
 
     ; Saltar a la primera tarea: Idle
+
+    ;Chequeo de funcionamiento de mmu_mapear_pagina
+    ;Esto aca da excepcion de Page Fault
+    ; mov eax, 0x12345678
+    ; mov dword [0x11c0000], eax
+
+    xor eax, eax
+    mov eax, cr3
+
+    push 0x11c0000
+    push eax
+    push 0x11c0000
+
+    call mmu_mapear_pagina
+
+    ;Esto aca no da excepcion
+    ; mov eax, 0x12345678
+    ; mov dword [0x11c0000], eax
+
+
 
     ; Ciclar infinitamente (por si algo sale mal...)
     mov eax, 0xFFFF

@@ -47,6 +47,7 @@ void idt_inicializar() {
     IDT_ENTRY(1);
 
     IDT_ENTRY(13);
+    IDT_ENTRY(14);
 
     IDT_ENTRY(32);
     idt[32].attr = (unsigned short) 0x8E00;

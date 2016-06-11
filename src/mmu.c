@@ -7,8 +7,8 @@
 
 #include "mmu.h"
 
-pdt_entry pdt[1024];
-pte_entry pte[1024];
+//pdt_entry pdt[1024];
+//pte_entry pte[1024];
 
 unsigned int proxima_pagina_libre;
 
@@ -22,7 +22,7 @@ unsigned int mmu_proxima_pagina_fisica_libre() {
 	return pagina_libre;
 }
 
-void mmu_inicialiar_dir_kernel() {
+void mmu_inicializar_dir_kernel() {
 	pdt_entry* pdt = (pdt_entry*) 0x00027000;
 	pte_entry* pte = (pte_entry*) 0x00028000;
 	int i;
@@ -75,7 +75,7 @@ void mmu_inicialiar_dir_kernel() {
 	}
 }
 
-void mmu_inicialiar_dir_tarea(unsigned int dir_codigo, short pos_x, short pos_y, short target_x, short target_y) {
+unsigned int mmu_inicializar_dir_tarea(unsigned int dir_codigo, short pos_x, short pos_y) {
 	pdt_entry* pdt = (pdt_entry*) mmu_proxima_pagina_fisica_libre();
 	int i;
 	unsigned int cacho_codigo;
@@ -97,7 +97,6 @@ void mmu_inicialiar_dir_tarea(unsigned int dir_codigo, short pos_x, short pos_y,
 	}
 
 	unsigned int* copiar_codigo = (unsigned int*) ( 0x40000 + (pos_x * 2) + (pos_y * 160) );
-	unsigned int* target = (unsigned int*) ( 0x40000 + (target_x * 2) + (target_y * 160) );
 
 	for(i = 0; i < 1024; i++){
 		cacho_codigo = *((unsigned int*) dir_codigo);
@@ -107,22 +106,29 @@ void mmu_inicialiar_dir_tarea(unsigned int dir_codigo, short pos_x, short pos_y,
 	}
 
 	mmu_mapear_pagina(0x08000000, (unsigned int) pdt, (unsigned int) copiar_codigo);
-	mmu_mapear_pagina(0x08001000, (unsigned int) pdt, (unsigned int) target);
+	mmu_mapear_pagina(0x08001000, (unsigned int) pdt, (unsigned int) copiar_codigo);
+
+	return (unsigned int) pdt;
+	//Devuelve el puntero a la PDT
 }
 
 void mmu_mapear_pagina(unsigned int virtualaddr, unsigned int cr3, unsigned int fisicaaddr) {
-	unsigned long pd_offset = (unsigned long)virtualaddr >> 22;
-    unsigned long pt_index = (unsigned long)virtualaddr >> 12 & 0x03FF;
+	unsigned int pd_offset = virtualaddr >> 22;
+    unsigned int pt_index = virtualaddr >> 12 & 0x03FF;
+
     int i;
 
     pdt_entry* pdte;
+    
 
     //unsigned long * pd = (unsigned long *)0x00027000;
 
-    pdte = (pdt_entry*) ( ( cr3 & 0xFFC00000 ) + (pd_offset * 4));		//RAVIOLI
+    pdte = (pdt_entry*) ( (unsigned int) ( cr3 & 0xFFFFFC00 ) + (unsigned int) (pd_offset * 4));		//RAVIOLI
+
     // Here you need to check whether the PD entry is present.
     // When it is not present, you need to create a new empty PT and
     // adjust the PDE accordingly.
+
     if ( (unsigned char) pdte->p != 0x01 ) {
 
     	pte_entry* pte = (pte_entry*) mmu_proxima_pagina_fisica_libre();
@@ -142,17 +148,17 @@ void mmu_mapear_pagina(unsigned int virtualaddr, unsigned int cr3, unsigned int 
 		        (unsigned int)    	0x00000000,	   	/* base[0:19]  */
 		    };
 		}
-		pdte->p = 0x01;
-		pdte->r_w = 0x01;
+		pdte->p = (unsigned char) 0x01;
+		pdte->r_w = (unsigned char) 0x01;
 		pdte->dir_base = (((unsigned int) pte) >> 12);
     }
 
 
     //unsigned long * pt = ((unsigned long *)(pdte->base)) + (0x1000 * );
-    pte_entry* ptee = (pte_entry*) (pdte->dir_base << 12) + (pt_index * 4);		//RAVIOLI
-    
-    ptee->p = 0x01;
-    ptee->r_w = 0x01;
+    pte_entry* ptee = (pte_entry*) ((unsigned int)(pdte->dir_base << 12) + (unsigned int)(pt_index * 4));		//RAVIOLI
+
+    ptee->p = (unsigned char) 0x01;
+    ptee->r_w = (unsigned char) 0x01;
     ptee->dir_base = (fisicaaddr >> 12);
     //ayy lmao
 

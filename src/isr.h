@@ -12,6 +12,7 @@ void _isr0();
 void _isr1();
 
 void _isr13();
+void _isr14();
 
 void _isr32();
 void _isr33();

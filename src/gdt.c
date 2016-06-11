@@ -146,7 +146,7 @@ unsigned int agregar_tss(unsigned int donde){
         (unsigned char)     0x00,           /* db           */
         (unsigned char)     0x01,           /* g            */
         (unsigned char)     donde_alta,           /* base[31:24]  */
-    }
+    };
 
     return tss_index;
 }
