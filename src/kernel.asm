@@ -134,8 +134,8 @@ BITS 32
 
     ;Chequeo de funcionamiento de mmu_mapear_pagina
     ;Esto aca da excepcion de Page Fault
-    ; mov eax, 0x12345678
-    ; mov dword [0x11c0000], eax
+    mov eax, 0x12345678
+    mov dword [0x11c0000], eax
 
     xor eax, eax
     mov eax, cr3
@@ -147,10 +147,12 @@ BITS 32
     call mmu_mapear_pagina
 
     ;Esto aca no da excepcion
-    ; mov eax, 0x12345678
-    ; mov dword [0x11c0000], eax
+    mov eax, 0x12345678
+    mov dword [0x11c0000], eax
 
-
+    ;Chequeo de funcionamiento de mmu_inicializar_dir_tarea
+    ;Lo que haria falta para probar bien es cargar en cierto 
+    call mmu_inicializar_dir_tarea
 
     ; Ciclar infinitamente (por si algo sale mal...)
     mov eax, 0xFFFF
