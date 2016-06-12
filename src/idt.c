@@ -46,6 +46,9 @@ void idt_inicializar() {
     IDT_ENTRY(0);
     IDT_ENTRY(1);
 
+    IDT_ENTRY(10);
+
+    IDT_ENTRY(12);
     IDT_ENTRY(13);
     IDT_ENTRY(14);
 

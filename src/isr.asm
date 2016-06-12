@@ -92,9 +92,9 @@ ISR 1   ;Divison Error
 ;ISR 7   ;Divison Error
 ;ISR 8   ;Divison Error
 ;ISR 9   ;Divison Error
-;ISR 10   ;Divison Error
+ISR 10
 ;ISR 11   ;Divison Error
-;ISR 12   ;Divison Error
+ISR 12   ;Divison Error
 ISR 13   ;Divison Error
 ISR 14
 

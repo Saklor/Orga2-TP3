@@ -17,6 +17,9 @@ extern mmu_unmapear_pagina
 extern resetear_pic
 extern habilitar_pic
 
+extern tss_inicializar
+extern tss_inicializar_idle
+
 ;; Saltear seccion de datos
 jmp start
 
@@ -111,8 +114,10 @@ BITS 32
     mov cr0, eax
 
     ; Inicializar tss
+    call tss_inicializar
 
     ; Inicializar tss de la tarea Idle
+    call tss_inicializar_idle
 
     ; Inicializar el scheduler
 
@@ -127,12 +132,14 @@ BITS 32
     call habilitar_pic
 
     ; Cargar tarea inicial
+    mov ax, 0x30
+    ltr ax
 
     ; Habilitar interrupciones
     sti
 
     ; Saltar a la primera tarea: Idle
-
+    jmp 0x38:0x04201337
 
 
 
