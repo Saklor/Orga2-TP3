@@ -70,6 +70,8 @@ _isr%1:
 ; Scheduler
 isrnumero:           dd 0x00000000
 isrClock:            db '|/-\'
+offset:              dd 0
+selector:            dw 0
 
 ;Interrupcions
 se_rompio_todo_msg  db      'Se rompio todo.'    ;Completar para que diga el numero de excepcion
@@ -106,7 +108,22 @@ _isr32:
 pushad
     call proximo_reloj
 
+    call sched_proximo_indice
+
+    cmp ax, 0
+        xchg bx, bx
+        mov [selector], ax
+        call fin_intr_pic1
+
+        xchg bx, bx
+        jmp far [offset]
+        jmp .end
+    je .nojump
+
+    .nojump:
     call fin_intr_pic1
+
+    .end
 popad
 iret
 ;;

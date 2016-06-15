@@ -20,6 +20,8 @@ extern habilitar_pic
 extern tss_inicializar
 extern tss_inicializar_idle
 
+extern sched_inicializar
+
 ;; Saltear seccion de datos
 jmp start
 
@@ -120,6 +122,7 @@ BITS 32
     call tss_inicializar_idle
 
     ; Inicializar el scheduler
+    call sched_inicializar
 
     ; Inicializar la IDT
     call idt_inicializar

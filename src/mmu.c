@@ -80,10 +80,42 @@ unsigned int mmu_inicializar_dir_tarea(unsigned int dir_codigo, short pos_x, sho
 	int i;
 	unsigned int cacho_codigo;
 	unsigned int cr3;
+	
+	pte_entry* pte_identity_maping = (pte_entry*) mmu_proxima_pagina_fisica_libre();
+
+	pdt[0] = (pdt_entry) {
+	        (unsigned char)     0x01,           /* p            */
+	        (unsigned char)     0x01,           /* r_w          */
+	        (unsigned char)     0x00,           /* u_s          */
+	        (unsigned char)     0x00,           /* pwt          */
+	        (unsigned char)     0x00,           /* pcd          */
+	        (unsigned char)     0x00,           /* a            */
+	        (unsigned char)     0x00,           /* ignored      */
+	        (unsigned char)     0x00,           /* ps           */
+	        (unsigned char)     0x00,           /* g            */
+	        (unsigned char)    	0x00,         	/* reservados[0:2]   */
+	        (unsigned int)    	(((unsigned int) pte_identity_maping) >> 12),   	/* base[0:19]  */
+	    };
+
+   	for (i = 0; i < 1024; i++) {
+		pte_identity_maping[i] = (pte_entry) {
+			(unsigned char)     0x01,           /* p            */
+	        (unsigned char)     0x01,           /* r_w          */
+	        (unsigned char)     0x00,           /* u_s          */
+	        (unsigned char)     0x00,           /* pwt          */
+	        (unsigned char)     0x00,           /* pcd          */
+	        (unsigned char)     0x00,           /* a            */
+	        (unsigned char)     0x00,           /* ignored      */
+	        (unsigned char)     0x00,           /* ps           */
+	        (unsigned char)     0x00,           /* g            */
+	        (unsigned char)    	0x00,         	/* reservados[0:2]   */
+	        (unsigned int)    	i,			   	/* base[0:19]  */
+	    };
+	}
 
 	cr3 = rcr3();
 
-	for (i = 0; i < 1024; i++) {
+	for (i = 1; i < 1024; i++) {
 		pdt[i] = (pdt_entry) {
 			(unsigned char)     0x00,           /* p            */
 	        (unsigned char)     0x00,           /* r_w          */
@@ -100,7 +132,7 @@ unsigned int mmu_inicializar_dir_tarea(unsigned int dir_codigo, short pos_x, sho
 	}
 
 	unsigned int* copiar_codigo = (unsigned int*) ( 0x400000 + (pos_x * 0x1000) + (pos_y * 0x80000) );
-	mmu_mapear_pagina( (unsigned int) copiar_codigo, cr3, (unsigned int) copiar_codigo);
+	mmu_mapear_pagina( (unsigned int) copiar_codigo, cr3, (unsigned int) copiar_codigo, (unsigned char) 0x00);
 
 	for(i = 0; i < 1024; i++){
 		cacho_codigo = *((unsigned int*) dir_codigo);
@@ -113,14 +145,14 @@ unsigned int mmu_inicializar_dir_tarea(unsigned int dir_codigo, short pos_x, sho
 	
 	mmu_unmapear_pagina( (unsigned int) copiar_codigo, cr3);
 
-	mmu_mapear_pagina(0x08000000, (unsigned int) pdt, (unsigned int) copiar_codigo);
-	mmu_mapear_pagina(0x08001000, (unsigned int) pdt, (unsigned int) copiar_codigo);
+	mmu_mapear_pagina(0x08000000, (unsigned int) pdt, (unsigned int) copiar_codigo, (unsigned char) 0x01);
+	mmu_mapear_pagina(0x08001000, (unsigned int) pdt, (unsigned int) copiar_codigo, (unsigned char) 0x01);
 
 	return (unsigned int) pdt;
 	//Devuelve el puntero a la PDT
 }
 
-void mmu_mapear_pagina(unsigned int virtualaddr, unsigned int cr3, unsigned int fisicaaddr) {
+void mmu_mapear_pagina(unsigned int virtualaddr, unsigned int cr3, unsigned int fisicaaddr, unsigned char u_s) {
 	unsigned int pd_offset = virtualaddr >> 22;
     unsigned int pt_index = virtualaddr >> 12 & 0x03FF;
 
@@ -158,6 +190,7 @@ void mmu_mapear_pagina(unsigned int virtualaddr, unsigned int cr3, unsigned int 
 		}
 		pdte->p = (unsigned char) 0x01;
 		pdte->r_w = (unsigned char) 0x01;
+		pdte->u_s = (unsigned short) u_s;
 		pdte->dir_base = (((unsigned int) pte) >> 12);
     }
 
@@ -167,6 +200,7 @@ void mmu_mapear_pagina(unsigned int virtualaddr, unsigned int cr3, unsigned int 
 
     ptee->p = (unsigned char) 0x01;
     ptee->r_w = (unsigned char) 0x01;
+    ptee->u_s = (unsigned short) u_s;
     ptee->dir_base = (fisicaaddr >> 12);
     //ayy lmao
 

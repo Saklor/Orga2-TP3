@@ -12,6 +12,7 @@
 #include "i386.h"
 #include "gdt.h"
 #include "sched.h"
+#include "mmu.h"
 
 typedef struct str_tss {
     unsigned short  ptl;
@@ -56,5 +57,6 @@ typedef struct str_tss {
 
 void tss_inicializar();
 void tss_inicializar_idle();
+unsigned int tss_inicializar_tarea(char tareaID,short pos_x, short pos_y);
 
 #endif  /* !__TSS_H__ */
