@@ -69,10 +69,8 @@ void tss_inicializar_idle(){
  	unsigned int tareaDir;
  	if(tareaID == 0){
  		tareaDir = 0x00013000;
- 		
  	}else if(tareaID == 1){
  		tareaDir = 0x00011000;
-
  	}else{
  		tareaDir = 0x00012000;
  	}
@@ -81,24 +79,26 @@ void tss_inicializar_idle(){
  	unsigned int cr3_tarea = mmu_inicializar_dir_tarea(tareaDir,pos_x,pos_y);
 
  	unsigned int esp0 = mmu_proxima_pagina_fisica_libre();
- 	mmu_mapear_pagina(esp0, cr3_tarea, esp0, (unsigned char) 0x00);
-
+ 	//mmu_mapear_pagina(esp0, cr3_tarea, esp0, (unsigned char) 0x00);
 
  	vectorTareas[primer_indice_vector_disponible].eip = (unsigned int) 0x08000000;
-	vectorTareas[primer_indice_vector_disponible].esp = (unsigned int) 0x08001000;
 	vectorTareas[primer_indice_vector_disponible].ebp = (unsigned int) 0x08001000;
-	vectorTareas[primer_indice_vector_disponible].ss = (unsigned short) GDT_IDX_DATA_LVL3 * 0x08;
+
+	vectorTareas[primer_indice_vector_disponible].esp = (unsigned int) 0x08001000;
+	vectorTareas[primer_indice_vector_disponible].ss = (unsigned short) ((GDT_IDX_DATA_LVL3 * 0x08) | 0x0003);
+
 	vectorTareas[primer_indice_vector_disponible].esp0 = (unsigned int) esp0;
-	vectorTareas[primer_indice_vector_disponible].ss0 = (unsigned short) GDT_IDX_DATA_LVL0 * 0x08;
-	vectorTareas[primer_indice_vector_disponible].cs = (unsigned short) GDT_IDX_COD_LVL3 * 0x08;
+	vectorTareas[primer_indice_vector_disponible].ss0 = (unsigned short) (GDT_IDX_DATA_LVL0 * 0x08);
+
+	vectorTareas[primer_indice_vector_disponible].cs = (unsigned short) ((GDT_IDX_COD_LVL3 * 0x08) | 0x0003);
 	vectorTareas[primer_indice_vector_disponible].cr3 = (unsigned int) cr3_tarea;
-	vectorTareas[primer_indice_vector_disponible].eflags = (unsigned int) 0x00000202;
+	vectorTareas[primer_indice_vector_disponible].eflags = (unsigned int) 0x202;
 
-	vectorTareas[primer_indice_vector_disponible].es = (unsigned short) GDT_IDX_DATA_LVL3 * 0x08;
-	vectorTareas[primer_indice_vector_disponible].gs = (unsigned short) GDT_IDX_DATA_LVL3 * 0x08;
-	vectorTareas[primer_indice_vector_disponible].ds = (unsigned short) GDT_IDX_DATA_LVL3 * 0x08;
+	vectorTareas[primer_indice_vector_disponible].es = (unsigned short) ((GDT_IDX_DATA_LVL3 * 0x08) | 0x0003);
+	vectorTareas[primer_indice_vector_disponible].gs = (unsigned short) ((GDT_IDX_DATA_LVL3 * 0x08) | 0x0003);
+	vectorTareas[primer_indice_vector_disponible].ds = (unsigned short) ((GDT_IDX_DATA_LVL3 * 0x08) | 0x0003);
 
-	vectorTareas[primer_indice_vector_disponible].fs = (unsigned short) GDT_IDX_DATA_VID * 0x08;
+	vectorTareas[primer_indice_vector_disponible].fs = (unsigned short) ((GDT_IDX_DATA_LVL3 * 0x08) | 0x0003); //Ravioli, porque no va esto? //(GDT_IDX_DATA_VID * 0x08);
 
 	vectorTareas[primer_indice_vector_disponible].iomap = (unsigned short) 0xFFFF;
 

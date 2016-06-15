@@ -11,12 +11,12 @@ info_tarea tareas_sanas[15];
 info_tarea tareas_a[5];
 info_tarea tareas_b[5];
 
-unsigned char turno = 0;
+unsigned char turno = 2;
 //Turno = 0: sanas
 //Turno = 1: jugador a
 //Turno = 2: jugador b
 
-unsigned char indice[3] = {0,0,0};	//se llama con indice[turno]
+unsigned char indice[3] = {14,4,4};	//se llama con indice[turno]
 unsigned char indice_max[3] = {15, 5, 5};
 
 void sched_inicializar() {
@@ -50,9 +50,8 @@ unsigned short sched_proximo_indice() {
 	unsigned char turnos_revisados = 0;
 	unsigned char encontre_alguna = 0;
 
-	indice_inicial = indice[turno];
-
 	turno = (turno + 1) % 3;
+	indice_inicial = indice[turno];
 	indice[turno] = (indice[turno] + 1) % indice_max[turno];
 
 	while(encontre_alguna == 0 && turnos_revisados < 3){
@@ -76,11 +75,6 @@ unsigned short sched_proximo_indice() {
 			indice[turno] = (indice[turno] + 1) % indice_max[turno];
 			turnos_revisados++;
 		}
-	}
-
-	//Recorro la inicial
-	if (encontre_alguna != 1){
-
 	}
 
 	if (encontre_alguna == 1){

@@ -106,24 +106,20 @@ ISR 14
 global _isr32
 _isr32:
 pushad
+    
     call proximo_reloj
 
     call sched_proximo_indice
-
     cmp ax, 0
-        xchg bx, bx
+    je  .nojump
         mov [selector], ax
         call fin_intr_pic1
-
-        xchg bx, bx
         jmp far [offset]
         jmp .end
-    je .nojump
-
     .nojump:
+    
     call fin_intr_pic1
-
-    .end
+    .end:
 popad
 iret
 ;;

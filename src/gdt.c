@@ -133,7 +133,7 @@ unsigned int agregar_tss(unsigned int donde){
     unsigned short donde_baja = (unsigned short) (donde & 0x0000FFFF);
 
     gdt[tss_index] = (gdt_entry) {
-        (unsigned short)    0x0068,         /* limit[0:15]  */
+        (unsigned short)    0x0067,         /* limit[0:15]  */
         (unsigned short)    donde_baja,         /* base[0:15]   */
         (unsigned char)     donde_intermedio,           /* base[23:16]  */
         (unsigned char)     0x09,           /* type = Task Segment papu */

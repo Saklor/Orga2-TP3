@@ -190,7 +190,7 @@ void mmu_mapear_pagina(unsigned int virtualaddr, unsigned int cr3, unsigned int 
 		}
 		pdte->p = (unsigned char) 0x01;
 		pdte->r_w = (unsigned char) 0x01;
-		pdte->u_s = (unsigned short) u_s;
+		pdte->u_s = (unsigned char) u_s;
 		pdte->dir_base = (((unsigned int) pte) >> 12);
     }
 
@@ -200,7 +200,7 @@ void mmu_mapear_pagina(unsigned int virtualaddr, unsigned int cr3, unsigned int 
 
     ptee->p = (unsigned char) 0x01;
     ptee->r_w = (unsigned char) 0x01;
-    ptee->u_s = (unsigned short) u_s;
+    ptee->u_s = (unsigned char) u_s;
     ptee->dir_base = (fisicaaddr >> 12);
     //ayy lmao
 
