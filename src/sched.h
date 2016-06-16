@@ -28,4 +28,12 @@ typedef struct str_info_tarea {
 void sched_inicializar();
 unsigned short sched_proximo_indice();
 
+void sched_infectar(unsigned char indice_tarea, unsigned int inf);
+void sched_carga_pos_x_y(unsigned char indice_tarea, unsigned short* pos);
+void sched_mapear(unsigned char indice_tarea, unsigned short tar_x, unsigned short tar_y);
+
+void sched_matar_tarea(unsigned char indice_tarea);
+
+info_tarea* dame_info_a_partir_de_indice(unsigned char indice_tarea);
+
 #endif	/* !__SCHED_H__ */

@@ -17,12 +17,19 @@ extern fin_intr_pic1
 
 ;; Sched
 extern sched_proximo_indice
+extern sched_idle
 
 ;;Manejo del teclado
 extern manejo_teclado
 
 ;;Extra para interrupciones
 extern print_hex
+
+;; Game
+extern game_soy
+extern game_donde
+extern game_mapear
+extern game_matar_tarea
 
 ;;
 ;; Definición de MACROS
@@ -32,35 +39,40 @@ extern print_hex
 global _isr%1
 
 _isr%1:
-    mov eax, %1
+pushad
+    ;Dejo todo esto porque debe servir para el modo debug
+    ; mov eax, %1
 
-    pop edi
-    pop ebx ;ebx = EIP
+    ; pop edi
+    ; pop ebx ;ebx = EIP
 
-    imprimir_texto_mp se_rompio_todo_msg, se_rompio_todo_len, 0x40, 1, 0
-    imprimir_texto_mp excepcion_msg, excepcion_len, 0x40, 2, 0
-    ;Llamo a print en hexa para el codigo de error, que lo tengo en la pila
-    push 0x40               ;Attributes
-    push 2                  ;Y
-    push 0 + excepcion_len  ;X
-    push 2                  ;Size
-    push eax                ;text = error code
-    call print_hex
+    ; imprimir_texto_mp se_rompio_todo_msg, se_rompio_todo_len, 0x40, 1, 0
+    ; imprimir_texto_mp excepcion_msg, excepcion_len, 0x40, 2, 0
+    ; ;Llamo a print en hexa para el codigo de error, que lo tengo en la pila
+    ; push 0x40               ;Attributes
+    ; push 2                  ;Y
+    ; push 0 + excepcion_len  ;X
+    ; push 2                  ;Size
+    ; push eax                ;text = error code
+    ; call print_hex
 
-    imprimir_texto_mp posicion_msg, posicion_len, 0x40, 3, 0
-    ;Llamo a print en hexa para la posicion de la cual vengo, es decir el EIP, que lo tengo en la pila
-    push 0x40               ;Attributes
-    push 3                  ;Y
-    push 0 + posicion_len   ;X
-    push 8                  ;Size
-    push ebx                ;text = EIP
-    call print_hex
+    ; imprimir_texto_mp posicion_msg, posicion_len, 0x40, 3, 0
+    ; ;Llamo a print en hexa para la posicion de la cual vengo, es decir el EIP, que lo tengo en la pila
+    ; push 0x40               ;Attributes
+    ; push 3                  ;Y
+    ; push 0 + posicion_len   ;X
+    ; push 8                  ;Size
+    ; push ebx                ;text = EIP
+    ; call print_hex
 
-    push ebx
-    push edi
+    ; push ebx
+    ; push edi
 
-    jmp $
-    iret
+    ; jmp $
+    call game_matar_tarea
+    call sched_idle
+popad
+iret
 
 %endmacro
 
@@ -106,7 +118,7 @@ ISR 14
 global _isr32
 _isr32:
 pushad
-    
+
     call proximo_reloj
 
     call sched_proximo_indice
@@ -155,8 +167,57 @@ iret
 global _isr66
 _isr66:
 pushad
-    mov eax, 0x42
+    ;EAX = codigo
+    ;EBX = primer parametro
+    ;ECX = segundo parametro
+
+    ;DONDE
+    cmp eax, DONDE
+    jne .no_es_donde
+        push ebx
+        call game_donde
+        pop ebx
+        jmp .fin
+    .no_es_donde:
+
+    ;SOY
+    cmp eax, SOY
+    jne .no_es_soy
+        ;Seteo eax en 0
+        xor eax, eax
+        
+        ;Si ebx es VIRUS_ROJO entonces pongo en eax 1 (Infectado A)
+        cmp ebx, VIRUS_ROJO
+        jne .no_soy_infectado_A
+            mov eax, 1
+        .no_soy_infectado_A:
+
+        ;Si ebx es VIRUS_AZUL entonces pongo en eax 2 (Infectado B)
+        cmp ebx, VIRUS_AZUL
+        jne .no_soy_infectado_B
+            mov eax, 2
+        .no_soy_infectado_B:
+        
+        push eax
+        call game_soy
+        pop eax
+        jmp .fin
+    .no_es_soy:
+
+    ;MAPEAR
+    cmp eax, MAPEAR
+    jne .no_es_mapear
+        push ecx
+        push ebx
+        call game_mapear
+        pop ebx
+        pop ecx
+        jmp .fin
+    .no_es_mapear:
+
+    .fin:
     call fin_intr_pic1
+    call sched_idle
 popad
 iret
 
@@ -176,5 +237,3 @@ proximo_reloj:
                 imprimir_texto_mp ebx, 1, 0x0f, 49, 79
                 popad
         ret
-        
-        

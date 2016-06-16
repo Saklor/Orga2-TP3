@@ -19,6 +19,8 @@ unsigned char turno = 2;
 unsigned char indice[3] = {14,4,4};	//se llama con indice[turno]
 unsigned char indice_max[3] = {15, 5, 5};
 
+const unsigned short idle_offset = 0x38;
+
 void sched_inicializar() {
 	unsigned short tareas_sanas_pos_x[15] = {34,58,52,42,13,25,60,75,32,56,37,14,22,74,41};
 	unsigned short tareas_sanas_pos_y[15] = {32,11,1,21,29,18,25,15,15,3,40,35,5,8,24};
@@ -84,3 +86,68 @@ unsigned short sched_proximo_indice() {
 	}
 }
 
+void sched_idle() {
+	ltr(idle_offset);
+}
+
+void sched_infectar(unsigned char indice_tarea, unsigned int inf){
+	info_tarea* tarea = dame_info_a_partir_de_indice(indice_tarea);
+	tarea->infectada = inf;
+}
+
+void sched_carga_pos_x_y(unsigned char indice_tarea, unsigned short* pos){
+	info_tarea* tarea = dame_info_a_partir_de_indice(indice_tarea);
+	pos[0] = tarea->pos_x;
+	pos[1] = tarea->pos_y;
+}
+
+void sched_mapear(unsigned char indice_tarea, unsigned short tar_x, unsigned short tar_y){
+	info_tarea* tarea = dame_info_a_partir_de_indice(indice_tarea);
+	tarea->target_x = tar_x;
+	tarea->target_y = tar_y;
+}
+
+info_tarea* dame_info_a_partir_de_indice(unsigned char indice_tarea){
+	unsigned char encontrada = 0;
+	info_tarea* resultado;
+	int i;
+
+	// Entre 0x08 y 0x16 inclusive son tareas sanas y en el mismo orden que en el array
+	if (indice_tarea >= 0x08 && indice_tarea <= 0x16){
+		//Tarea sana
+
+		for (i = 0; i < 15; i++) {
+			if(tareas_sanas[i].indice_gdt == indice_tarea){
+				encontrada = 1;
+				resultado = &tareas_sanas[i];
+			}
+		}
+	} else {
+		//O bien tarea A o bien tarea B
+
+		// Es tarea A?
+		for (i = 0; i < 5; i++) {
+			if(tareas_a[i].indice_gdt == indice_tarea){
+				encontrada = 1;
+				resultado = &tareas_a[i];
+			}
+		}
+
+		// Es tarea B?
+		if (encontrada == 0){
+			for (i = 0; i < 5; i++) {
+				if(tareas_b[i].indice_gdt == indice_tarea){
+					encontrada = 1;
+					resultado = &tareas_b[i];
+				}
+			}
+		}
+	}
+
+	return resultado;
+}
+
+void sched_matar_tarea(unsigned char indice_tarea){
+	info_tarea* tarea = dame_info_a_partir_de_indice(indice_tarea);
+	tarea->esta_viva = 0;
+}
