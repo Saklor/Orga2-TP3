@@ -80,14 +80,16 @@ unsigned short sched_proximo_indice() {
 	}
 
 	if (encontre_alguna == 1){
-		return (unsigned short) (proximo_indice * (unsigned short) 0x08);
+		proximo_indice = (unsigned short) (proximo_indice * (unsigned short) 0x08);
 	} else {
-		return (unsigned short) 0x38;
+		proximo_indice = (unsigned short) 0x38;
 	}
-}
 
-void sched_idle() {
-	ltr(idle_offset);
+	if (rtr() != proximo_indice){
+		return proximo_indice;
+	} else {
+		return 0;
+	}
 }
 
 void sched_infectar(unsigned char indice_tarea, unsigned int inf){
@@ -148,6 +150,13 @@ info_tarea* dame_info_a_partir_de_indice(unsigned char indice_tarea){
 }
 
 void sched_matar_tarea(unsigned char indice_tarea){
+	//Mato a la tarea en mi informacion
 	info_tarea* tarea = dame_info_a_partir_de_indice(indice_tarea);
 	tarea->esta_viva = 0;
+
+	//Cambio el Task Register a la tarea inicial
+	ltr(0x30);
+
+	//Libero la entrada de la tss
+	tss_liberar_tarea(indice_tarea);
 }

@@ -17,7 +17,7 @@ extern fin_intr_pic1
 
 ;; Sched
 extern sched_proximo_indice
-extern sched_idle
+; extern sched_idle
 
 ;;Manejo del teclado
 extern manejo_teclado
@@ -41,7 +41,7 @@ global _isr%1
 _isr%1:
 pushad
     ;Dejo todo esto porque debe servir para el modo debug
-    ; mov eax, %1
+    mov eax, %1
 
     ; pop edi
     ; pop ebx ;ebx = EIP
@@ -69,7 +69,12 @@ pushad
     ; push edi
 
     ; jmp $
+
+    ; xchg bx, bx
     call game_matar_tarea
+
+    call fin_intr_pic1
+
     call sched_idle
 popad
 iret
@@ -122,6 +127,7 @@ pushad
     call proximo_reloj
 
     call sched_proximo_indice
+    
     cmp ax, 0
     je  .nojump
         mov [selector], ax
@@ -237,3 +243,9 @@ proximo_reloj:
                 imprimir_texto_mp ebx, 1, 0x0f, 49, 79
                 popad
         ret
+
+sched_idle:
+pushad
+    jmp 0x38:0x04201337
+    ret
+popad

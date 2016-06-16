@@ -59,4 +59,8 @@ void tss_inicializar();
 void tss_inicializar_idle();
 unsigned int tss_inicializar_tarea(char tareaID,short pos_x, short pos_y);
 
+unsigned int dame_proximo_indice(char tareaID);
+void tss_liberar_tarea(unsigned int indice_tarea);
+
+
 #endif  /* !__TSS_H__ */

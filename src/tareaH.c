@@ -11,5 +11,8 @@
 
 void task() {
 //   breakpoint();
-  while(1) { __asm __volatile("mov $2, %%eax":::"eax"); }
+  // while(1) { __asm __volatile("mov $2, %%eax":::"eax"); }
+	int i = 30;
+	int k = 0;
+	i = i / k;
 }
