@@ -7,6 +7,11 @@
 
 #include "screen.h"
 
+char valores[4] = "|/-\\";
+unsigned char reloj_actual_sanas[15];
+unsigned char reloj_actual_jugadores[2][5];
+
+
 void print(const char * text, unsigned int x, unsigned int y, unsigned short attr) {
     ca (*p)[VIDEO_COLS] = (ca (*)[VIDEO_COLS]) VIDEO_SCREEN;
     int i;
@@ -54,6 +59,7 @@ void print_int(unsigned int n, unsigned int x, unsigned int y, unsigned short at
 void inicializar_pantalla(){
     unsigned int i;
     unsigned int j;
+    char* inicializacion_reloj_tareas_jugador = "x x x x x <A";
 
     for ( j = 0; j < VIDEO_COLS; j++){
         print_hex(0,1,j,0,0);
@@ -70,6 +76,22 @@ void inicializar_pantalla(){
             print_hex(0,1,j,i,0);
         }
     }
+
+
+    //Inicializo relojes de sanas y jugadores
+    for (i = 0; i < 15; i++){
+        reloj_actual_sanas[i] = 0;
+        screen_avanzar_reloj_tarea(0, i);
+    }
+
+    for (i = 0; i < 5; i++){
+        reloj_actual_jugadores[0][i] = 0;
+        reloj_actual_jugadores[1][i] = 0;
+    }
+    print((char*) inicializacion_reloj_tareas_jugador, 4, 46, 0x07);
+    inicializacion_reloj_tareas_jugador = "B> x x x x x";
+    print((char*) inicializacion_reloj_tareas_jugador, 21, 46, 0x07);
+
 
     //pinto jugador A y B
 
@@ -112,4 +134,31 @@ void pintar_tarea_en_mapa(int jugador, unsigned short pos_x, unsigned short pos_
 
 }
 
+void screen_avanzar_reloj_tarea(unsigned char tareaID, unsigned char tarea_indice){
+    ca (*p)[VIDEO_COLS] = (ca (*)[VIDEO_COLS]) VIDEO_SCREEN;
+    unsigned char texto_a_mostrar;
+    unsigned char attr = 0x07;
+    unsigned char y;
+    unsigned char x_inicial;
 
+    if (tareaID == 0){
+        y = 48;
+        x_inicial = 4;
+        texto_a_mostrar = valores[reloj_actual_sanas[tarea_indice]];
+        reloj_actual_sanas[tarea_indice] = (reloj_actual_sanas[tarea_indice] + 1) % 4;
+    } else if (tareaID == 1){
+        y = 46;
+        x_inicial = 4;
+        texto_a_mostrar = valores[reloj_actual_jugadores[0][tarea_indice]];
+        reloj_actual_jugadores[0][tarea_indice] = (reloj_actual_jugadores[0][tarea_indice] + 1) % 4;
+    } else {
+        y = 46;
+        x_inicial = 24;
+        texto_a_mostrar = valores[reloj_actual_jugadores[1][tarea_indice]];
+        reloj_actual_jugadores[1][tarea_indice] = (reloj_actual_jugadores[1][tarea_indice] + 1) % 4;
+    }
+        
+    
+    p[y][x_inicial + 2 * tarea_indice].c = texto_a_mostrar;
+    p[y][x_inicial + 2 * tarea_indice].a = attr;
+}

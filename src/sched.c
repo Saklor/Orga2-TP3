@@ -86,6 +86,7 @@ unsigned short sched_proximo_indice() {
 	}
 
 	if (rtr() != proximo_indice){
+		screen_avanzar_reloj_tarea(turno, indice[turno]);
 		return proximo_indice;
 	} else {
 		return 0;
@@ -100,13 +101,16 @@ void sched_infectar(unsigned char indice_tarea, unsigned int inf){
 void sched_carga_pos_x_y(unsigned char indice_tarea, unsigned short* pos){
 	info_tarea* tarea = dame_info_a_partir_de_indice(indice_tarea);
 	pos[0] = tarea->pos_x;
-	pos[1] = tarea->pos_y;
+	//La tarea tiene acceso al mapa de la fila 1 a la 44 inclusive, pero tiene que verlas como 0-43, por lo que le restamos uno
+	pos[1] = tarea->pos_y -1;
 }
 
 void sched_mapear(unsigned char indice_tarea, unsigned short tar_x, unsigned short tar_y){
 	info_tarea* tarea = dame_info_a_partir_de_indice(indice_tarea);
 	tarea->target_x = tar_x;
-	tarea->target_y = tar_y;
+
+	//La tarea ve al mapa de la fila 0 a la 43 inclusive, pero en la pantalla se encuentra entre las filas 1-44, por lo que le sumamos uno
+	tarea->target_y = tar_y +1;
 }
 
 info_tarea* dame_info_a_partir_de_indice(unsigned char indice_tarea){

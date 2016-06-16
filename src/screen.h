@@ -28,5 +28,7 @@ void print_int(unsigned int n, unsigned int x, unsigned int y, unsigned short at
 void inicializar_pantalla();
 void pintar_tarea_en_mapa(int jugador, unsigned short pos_x, unsigned short pos_y);
 
+void screen_avanzar_reloj_tarea(unsigned char tareaID, unsigned char tarea_indice);
+
 
 #endif  /* !__SCREEN_H__ */

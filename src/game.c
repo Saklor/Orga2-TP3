@@ -128,7 +128,9 @@ void game_soy(unsigned int yoSoy) {
 	sched_infectar(indice_de_tarea, yoSoy);
 
 	//Actualizar estructuras de control del juego
-
+	
+	
+	
 	//Actualizar en pantalla
 
 }
