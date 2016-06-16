@@ -55,14 +55,17 @@ void inicializar_pantalla(){
     unsigned int i;
     unsigned int j;
 
+    for ( j = 0; j < VIDEO_COLS; j++){
+        print_hex(0,1,j,0,0);
+    }
 
-    for ( i = 0; i < 44; i++){
+    for ( i = 1; i <= 44; i++){
         for ( j = 0; j < VIDEO_COLS; j++){
             print_hex(0,1,j,i,(unsigned short)0x77);
         }
     }
 
-    for (i = 44; i < 50; i++){
+    for (i = 45; i < 50; i++){
         for (j = 0; j < 80; j++){
             print_hex(0,1,j,i,0);
         }
@@ -91,13 +94,13 @@ void inicializar_pantalla(){
     print_hex(0,1,41,24,(unsigned short) 0x22);
 
 
-    for (i = 44; i < 50; i++){
+    for (i = 45; i < 50; i++){
         for (j = 50; j < 57; j++){
             print_hex(0,1,j,i,(unsigned short) 0x44);
         }
     }
 
-    for (i = 44; i < 50; i++){
+    for (i = 45; i < 50; i++){
         for (j = 57; j < 64; j++){
             print_hex(0,1,j,i,(unsigned short) 0x11);
         }

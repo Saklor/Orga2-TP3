@@ -144,7 +144,6 @@ iret
 ;; Rutina de atención del TECLADO
 ;; -------------------------------------------------------------------------- ;;
 global _isr33
-extern manejo_keyboard
 
 _isr33:
 pushad

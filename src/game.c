@@ -8,6 +8,8 @@
 
 jugador jugadorA;
 jugador jugadorB;
+ca pixel_anterior_jugadorA;
+ca pixel_anterior_jugadorB;
 
 
 
@@ -19,6 +21,11 @@ void inicializar_jugadores(){
 	jugadorA.pos_x = (unsigned short) 40;
 	jugadorA.pos_y = (unsigned short) 20;
 
+	pixel_anterior_jugadorA.a = 0x77;
+	pixel_anterior_jugadorA.c = 0x00;
+	pixel_anterior_jugadorB.a = 0x77;
+	pixel_anterior_jugadorB.c = 0x00;
+
 	jugadorB.quien_soy = (unsigned int) 0;
 	jugadorB.contador_tareas = (unsigned int) 20;
 	jugadorB.cuantas_infectadas_vivas = (unsigned int) 0;
@@ -29,6 +36,11 @@ void inicializar_jugadores(){
 
 void game_mover_cursor(int jugador, direccion dir) {
 	//para que no se pisen los jugadores
+	unsigned char misma_posicion = 0;
+	if(jugadorA.pos_x == jugadorB.pos_x && jugadorA.pos_y == jugadorB.pos_y){
+		misma_posicion = 1;
+	}
+
 	unsigned short attr;
 	if(jugadorA.pos_x == jugadorB.pos_x && jugadorA.pos_y == jugadorB.pos_y){
 		if(jugador ==0){
@@ -40,32 +52,50 @@ void game_mover_cursor(int jugador, direccion dir) {
 		attr = (unsigned short) 0x77;
 	}
 
+	//Pantalla que empieza en la fila 1
+	ca (*p)[VIDEO_COLS] = (ca (*)[VIDEO_COLS]) (VIDEO_SCREEN);
+
 	if(jugador == 0){
 		if(dir == IZQ){
 			if(jugadorA.pos_x != 0){
 				//hay que chequear  ademas de mi cursor las cosas que estan mapeadas aca para dejarlo del color que estaba antes (se puede hacer syscall o algo?)
-				print_hex(10,1,(jugadorA.pos_x - 1),jugadorA.pos_y,(unsigned short) 0x4f);
-				print_hex(11,1,(jugadorA.pos_x),jugadorA.pos_y,(unsigned short) attr);
+				if (misma_posicion == 0)
+					print_hex(pixel_anterior_jugadorA.c,1,(jugadorA.pos_x),jugadorA.pos_y, pixel_anterior_jugadorA.a);
+				else
+					print_hex(11,1,(jugadorA.pos_x),jugadorA.pos_y, 0x1f);
 				jugadorA.pos_x = jugadorA.pos_x -1;
-
+				pixel_anterior_jugadorA = p[jugadorA.pos_y][jugadorA.pos_x];
+				print_hex(10,1,jugadorA.pos_x,jugadorA.pos_y,(unsigned short) 0x4f);
 			}
 		}else if(dir == DER){
 			if(jugadorA.pos_x != 79){
-				print_hex(10,1,(jugadorA.pos_x + 1),jugadorA.pos_y,(unsigned short) 0x4f);
-				print_hex(11,1,(jugadorA.pos_x),jugadorA.pos_y,(unsigned short) attr);
+				if (misma_posicion == 0)
+					print_hex(pixel_anterior_jugadorA.c,1,(jugadorA.pos_x),jugadorA.pos_y, pixel_anterior_jugadorA.a);
+				else
+					print_hex(11,1,(jugadorA.pos_x),jugadorA.pos_y, 0x1f);
 				jugadorA.pos_x = jugadorA.pos_x +1;
+				pixel_anterior_jugadorA = p[jugadorA.pos_y][jugadorA.pos_x];
+				print_hex(10,1,jugadorA.pos_x,jugadorA.pos_y,(unsigned short) 0x4f);
 			}
 		}else if(dir == ARB){
-			if(jugadorA.pos_y !=0){
-				print_hex(10,1,jugadorA.pos_x,(jugadorA.pos_y - 1),(unsigned short) 0x4f);
-				print_hex(11,1,jugadorA.pos_x,jugadorA.pos_y,(unsigned short) attr);
+			if(jugadorA.pos_y !=1){
+				if (misma_posicion == 0)
+					print_hex(pixel_anterior_jugadorA.c,1,(jugadorA.pos_x),jugadorA.pos_y, pixel_anterior_jugadorA.a);
+				else
+					print_hex(11,1,(jugadorA.pos_x),jugadorA.pos_y, 0x1f);
 				jugadorA.pos_y = jugadorA.pos_y -1;
+				pixel_anterior_jugadorA = p[jugadorA.pos_y][jugadorA.pos_x];
+				print_hex(10,1,jugadorA.pos_x,jugadorA.pos_y,(unsigned short) 0x4f);
 			}
 		}else if(dir == ABA){
-			if(jugadorA.pos_y != 43){
-				print_hex(10,1,jugadorA.pos_x,(jugadorA.pos_y +1),(unsigned short) 0x4f);
-				print_hex(11,1,jugadorA.pos_x,jugadorA.pos_y,(unsigned short) attr);
+			if(jugadorA.pos_y != 44){
+				if (misma_posicion == 0)
+					print_hex(pixel_anterior_jugadorA.c,1,(jugadorA.pos_x),jugadorA.pos_y, pixel_anterior_jugadorA.a);
+				else
+					print_hex(11,1,(jugadorA.pos_x),jugadorA.pos_y, 0x1f);
 				jugadorA.pos_y = jugadorA.pos_y +1;
+				pixel_anterior_jugadorA = p[jugadorA.pos_y][jugadorA.pos_x];
+				print_hex(10,1,jugadorA.pos_x,jugadorA.pos_y,(unsigned short) 0x4f);
 			}
 		}
 	}else{
@@ -84,13 +114,13 @@ void game_mover_cursor(int jugador, direccion dir) {
 				jugadorB.pos_x = jugadorB.pos_x +1;
 			}
 		}else if(dir == ARB){
-			if(jugadorB.pos_y !=0){
+			if(jugadorB.pos_y !=1){
 				print_hex(11,1,jugadorB.pos_x,(jugadorB.pos_y - 1),(unsigned short) 0x1f);
 				print_hex(10,1,jugadorB.pos_x,jugadorB.pos_y,(unsigned short) attr);
 				jugadorB.pos_y = jugadorB.pos_y -1;
 			}
 		}else if(dir == ABA){
-			if(jugadorB.pos_y != 43){
+			if(jugadorB.pos_y != 44){
 				print_hex(11,1,jugadorB.pos_x,(jugadorB.pos_y +1),(unsigned short) 0x1f);
 				print_hex(10,1,jugadorB.pos_x,jugadorB.pos_y,(unsigned short) attr);
 				jugadorB.pos_y = jugadorB.pos_y +1;
