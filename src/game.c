@@ -41,91 +41,76 @@ void game_mover_cursor(int jugador, direccion dir) {
 		misma_posicion = 1;
 	}
 
-	unsigned short attr;
-	if(jugadorA.pos_x == jugadorB.pos_x && jugadorA.pos_y == jugadorB.pos_y){
-		if(jugador ==0){
-			attr = (unsigned short) 0x1f;
-		}else{
-			attr = (unsigned short) 0x4f;
-		}
-	}else{
-		attr = (unsigned short) 0x77;
-	}
+	// unsigned short attr;
+	// if(jugadorA.pos_x == jugadorB.pos_x && jugadorA.pos_y == jugadorB.pos_y){
+	// 	if(jugador ==0){
+	// 		attr = (unsigned short) 0x1f;
+	// 	}else{
+	// 		attr = (unsigned short) 0x4f;
+	// 	}
+	// }else{
+	// 	attr = (unsigned short) 0x77;
+	// }
 
 	//Pantalla que empieza en la fila 1
 	ca (*p)[VIDEO_COLS] = (ca (*)[VIDEO_COLS]) (VIDEO_SCREEN);
 
 	if(jugador == 0){
-		if(dir == IZQ){
-			if(jugadorA.pos_x != 0){
-				//hay que chequear  ademas de mi cursor las cosas que estan mapeadas aca para dejarlo del color que estaba antes (se puede hacer syscall o algo?)
-				if (misma_posicion == 0)
-					print_hex(pixel_anterior_jugadorA.c,1,(jugadorA.pos_x),jugadorA.pos_y, pixel_anterior_jugadorA.a);
-				else
-					print_hex(11,1,(jugadorA.pos_x),jugadorA.pos_y, 0x1f);
-				jugadorA.pos_x = jugadorA.pos_x -1;
-				pixel_anterior_jugadorA = p[jugadorA.pos_y][jugadorA.pos_x];
-				print_hex(10,1,jugadorA.pos_x,jugadorA.pos_y,(unsigned short) 0x4f);
-			}
-		}else if(dir == DER){
-			if(jugadorA.pos_x != 79){
-				if (misma_posicion == 0)
-					print_hex(pixel_anterior_jugadorA.c,1,(jugadorA.pos_x),jugadorA.pos_y, pixel_anterior_jugadorA.a);
-				else
-					print_hex(11,1,(jugadorA.pos_x),jugadorA.pos_y, 0x1f);
-				jugadorA.pos_x = jugadorA.pos_x +1;
-				pixel_anterior_jugadorA = p[jugadorA.pos_y][jugadorA.pos_x];
-				print_hex(10,1,jugadorA.pos_x,jugadorA.pos_y,(unsigned short) 0x4f);
-			}
-		}else if(dir == ARB){
-			if(jugadorA.pos_y !=1){
-				if (misma_posicion == 0)
-					print_hex(pixel_anterior_jugadorA.c,1,(jugadorA.pos_x),jugadorA.pos_y, pixel_anterior_jugadorA.a);
-				else
-					print_hex(11,1,(jugadorA.pos_x),jugadorA.pos_y, 0x1f);
-				jugadorA.pos_y = jugadorA.pos_y -1;
-				pixel_anterior_jugadorA = p[jugadorA.pos_y][jugadorA.pos_x];
-				print_hex(10,1,jugadorA.pos_x,jugadorA.pos_y,(unsigned short) 0x4f);
-			}
-		}else if(dir == ABA){
-			if(jugadorA.pos_y != 44){
-				if (misma_posicion == 0)
-					print_hex(pixel_anterior_jugadorA.c,1,(jugadorA.pos_x),jugadorA.pos_y, pixel_anterior_jugadorA.a);
-				else
-					print_hex(11,1,(jugadorA.pos_x),jugadorA.pos_y, 0x1f);
-				jugadorA.pos_y = jugadorA.pos_y +1;
-				pixel_anterior_jugadorA = p[jugadorA.pos_y][jugadorA.pos_x];
-				print_hex(10,1,jugadorA.pos_x,jugadorA.pos_y,(unsigned short) 0x4f);
-			}
-		}
-	}else{
-		if(dir == IZQ){
-			if(jugadorB.pos_x != 0){
-				//hay que chequear  ademas de mi cursor las cosas que estan mapeadas aca para dejarlo del color que estaba antes (se puede hacer syscall o algo?)
-				print_hex(11,1,(jugadorB.pos_x - 1),jugadorB.pos_y,(unsigned short) 0x1f);
-				print_hex(10,1,(jugadorB.pos_x),jugadorB.pos_y,(unsigned short) attr);
-				jugadorB.pos_x = jugadorB.pos_x -1;
+		//Pinto lo que habia antes
+		if (misma_posicion == 0)
+			print_hex(pixel_anterior_jugadorA.c,1,(jugadorA.pos_x),jugadorA.pos_y, pixel_anterior_jugadorA.a);
+		else
+			print_hex(11,1,(jugadorA.pos_x),jugadorA.pos_y, 0x1f);
 
-			}
+		//Cambio la posicion solo si es valido el movimiento
+		if(dir == IZQ){
+			if(jugadorA.pos_x != 0)
+				jugadorA.pos_x = jugadorA.pos_x -1;
 		}else if(dir == DER){
-			if(jugadorB.pos_x != 79){
-				print_hex(11,1,(jugadorB.pos_x + 1),jugadorB.pos_y,(unsigned short) 0x1f);
-				print_hex(10,1,(jugadorB.pos_x),jugadorB.pos_y,(unsigned short) attr);
-				jugadorB.pos_x = jugadorB.pos_x +1;
-			}
+			if(jugadorA.pos_x != 79)
+				jugadorA.pos_x = jugadorA.pos_x +1;
 		}else if(dir == ARB){
-			if(jugadorB.pos_y !=1){
-				print_hex(11,1,jugadorB.pos_x,(jugadorB.pos_y - 1),(unsigned short) 0x1f);
-				print_hex(10,1,jugadorB.pos_x,jugadorB.pos_y,(unsigned short) attr);
-				jugadorB.pos_y = jugadorB.pos_y -1;
-			}
+			if(jugadorA.pos_y !=1)
+				jugadorA.pos_y = jugadorA.pos_y -1;
 		}else if(dir == ABA){
-			if(jugadorB.pos_y != 44){
-				print_hex(11,1,jugadorB.pos_x,(jugadorB.pos_y +1),(unsigned short) 0x1f);
-				print_hex(10,1,jugadorB.pos_x,jugadorB.pos_y,(unsigned short) attr);
-				jugadorB.pos_y = jugadorB.pos_y +1;
-			}
+			if(jugadorA.pos_y != 44)
+				jugadorA.pos_y = jugadorA.pos_y +1;
 		}
+
+		//Guardo el valor de la nueva posicion y me pinto en ella
+		if(jugadorA.pos_x == jugadorB.pos_x && jugadorA.pos_y == jugadorB.pos_y)
+			pixel_anterior_jugadorA = pixel_anterior_jugadorB;
+		else
+			pixel_anterior_jugadorA = p[jugadorA.pos_y][jugadorA.pos_x];
+		print_hex(10,1,jugadorA.pos_x,jugadorA.pos_y,(unsigned short) 0x4f);
+	}else{
+		//Pinto lo que habia antes
+		if (misma_posicion == 0)
+			print_hex(pixel_anterior_jugadorB.c,1,(jugadorB.pos_x),jugadorB.pos_y, pixel_anterior_jugadorB.a);
+		else
+			print_hex(10,1,(jugadorB.pos_x),jugadorB.pos_y, 0x4f);
+
+		//Cambio la posicion solo si es valido el movimiento
+		if(dir == IZQ){
+			if(jugadorB.pos_x != 0)
+				jugadorB.pos_x = jugadorB.pos_x -1;
+		}else if(dir == DER){
+			if(jugadorB.pos_x != 79)
+				jugadorB.pos_x = jugadorB.pos_x +1;
+		}else if(dir == ARB){
+			if(jugadorB.pos_y !=1)
+				jugadorB.pos_y = jugadorB.pos_y -1;
+		}else if(dir == ABA){
+			if(jugadorB.pos_y != 44)
+				jugadorB.pos_y = jugadorB.pos_y +1;
+		}
+
+		//Guardo el valor de la nueva posicion y me pinto en ella
+		if(jugadorA.pos_x == jugadorB.pos_x && jugadorA.pos_y == jugadorB.pos_y)
+			pixel_anterior_jugadorB = pixel_anterior_jugadorA;
+		else
+			pixel_anterior_jugadorB = p[jugadorB.pos_y][jugadorB.pos_x];
+		print_hex(11,1,jugadorB.pos_x,jugadorB.pos_y,(unsigned short) 0x1f);
 
 	}
 }
