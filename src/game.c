@@ -6,8 +6,98 @@
 
 #include "game.h"
 
+jugador jugadorA;
+jugador jugadorB;
+
+
+
+void inicializar_jugadores(){
+
+	jugadorA.quien_soy = (unsigned int) 0;
+	jugadorA.contador_tareas = (unsigned int) 20;
+	jugadorA.cuantas_infectadas_vivas = (unsigned int) 0;
+	jugadorA.pos_x = (unsigned short) 40;
+	jugadorA.pos_y = (unsigned short) 20;
+
+	jugadorB.quien_soy = (unsigned int) 0;
+	jugadorB.contador_tareas = (unsigned int) 20;
+	jugadorB.cuantas_infectadas_vivas = (unsigned int) 0;
+	jugadorB.pos_x = (unsigned short) 41;
+	jugadorB.pos_y = (unsigned short) 20;
+}
+
 
 void game_mover_cursor(int jugador, direccion dir) {
+	//para que no se pisen los jugadores
+	unsigned short attr;
+	if(jugadorA.pos_x == jugadorB.pos_x && jugadorA.pos_y == jugadorB.pos_y){
+		if(jugador ==0){
+			attr = (unsigned short) 0x1f;
+		}else{
+			attr = (unsigned short) 0x4f;
+		}
+	}else{
+		attr = (unsigned short) 0x77;
+	}
+
+	if(jugador == 0){
+		if(dir == IZQ){
+			if(jugadorA.pos_x != 0){
+				//hay que chequear  ademas de mi cursor las cosas que estan mapeadas aca para dejarlo del color que estaba antes (se puede hacer syscall o algo?)
+				print_hex(10,1,(jugadorA.pos_x - 1),jugadorA.pos_y,(unsigned short) 0x4f);
+				print_hex(11,1,(jugadorA.pos_x),jugadorA.pos_y,(unsigned short) attr);
+				jugadorA.pos_x = jugadorA.pos_x -1;
+
+			}
+		}else if(dir == DER){
+			if(jugadorA.pos_x != 79){
+				print_hex(10,1,(jugadorA.pos_x + 1),jugadorA.pos_y,(unsigned short) 0x4f);
+				print_hex(11,1,(jugadorA.pos_x),jugadorA.pos_y,(unsigned short) attr);
+				jugadorA.pos_x = jugadorA.pos_x +1;
+			}
+		}else if(dir == ARB){
+			if(jugadorA.pos_y !=0){
+				print_hex(10,1,jugadorA.pos_x,(jugadorA.pos_y - 1),(unsigned short) 0x4f);
+				print_hex(11,1,jugadorA.pos_x,jugadorA.pos_y,(unsigned short) attr);
+				jugadorA.pos_y = jugadorA.pos_y -1;
+			}
+		}else if(dir == ABA){
+			if(jugadorA.pos_y != 43){
+				print_hex(10,1,jugadorA.pos_x,(jugadorA.pos_y +1),(unsigned short) 0x4f);
+				print_hex(11,1,jugadorA.pos_x,jugadorA.pos_y,(unsigned short) attr);
+				jugadorA.pos_y = jugadorA.pos_y +1;
+			}
+		}
+	}else{
+		if(dir == IZQ){
+			if(jugadorB.pos_x != 0){
+				//hay que chequear  ademas de mi cursor las cosas que estan mapeadas aca para dejarlo del color que estaba antes (se puede hacer syscall o algo?)
+				print_hex(11,1,(jugadorB.pos_x - 1),jugadorB.pos_y,(unsigned short) 0x1f);
+				print_hex(10,1,(jugadorB.pos_x),jugadorB.pos_y,(unsigned short) attr);
+				jugadorB.pos_x = jugadorB.pos_x -1;
+
+			}
+		}else if(dir == DER){
+			if(jugadorB.pos_x != 79){
+				print_hex(11,1,(jugadorB.pos_x + 1),jugadorB.pos_y,(unsigned short) 0x1f);
+				print_hex(10,1,(jugadorB.pos_x),jugadorB.pos_y,(unsigned short) attr);
+				jugadorB.pos_x = jugadorB.pos_x +1;
+			}
+		}else if(dir == ARB){
+			if(jugadorB.pos_y !=0){
+				print_hex(11,1,jugadorB.pos_x,(jugadorB.pos_y - 1),(unsigned short) 0x1f);
+				print_hex(10,1,jugadorB.pos_x,jugadorB.pos_y,(unsigned short) attr);
+				jugadorB.pos_y = jugadorB.pos_y -1;
+			}
+		}else if(dir == ABA){
+			if(jugadorB.pos_y != 43){
+				print_hex(11,1,jugadorB.pos_x,(jugadorB.pos_y +1),(unsigned short) 0x1f);
+				print_hex(10,1,jugadorB.pos_x,jugadorB.pos_y,(unsigned short) attr);
+				jugadorB.pos_y = jugadorB.pos_y +1;
+			}
+		}
+
+	}
 }
 
 void game_lanzar(unsigned int jugador) {

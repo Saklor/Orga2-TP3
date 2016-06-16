@@ -62,38 +62,73 @@ void idt_inicializar() {
 
 char manejo_teclado(char scanCode){
     char valor;
+    int player;
+    direccion dir;
 
-    if(scanCode == 0x2a){
-        valor = '1';    
+    if(scanCode == 0x2a){ 
+        valor = '1';
+
     }
     if(scanCode == 0x36){
-        valor = '2';    
+        valor = '2'; 
+
     }
     if(scanCode == 0x1f){
-        valor = 's';    
+        valor = 's'; 
+        dir = ABA;
+        player = 0;
+        game_mover_cursor(player,dir);
+
     }
     //1e (A), 1f (S), 20 
     if(scanCode == 0x1e){
-        valor = 'a';    
+        valor = 'a';
+        dir = IZQ;
+        player = 0;
+        game_mover_cursor(player,dir);
+
     }
     if(scanCode == 0x20){
         valor = 'd';
+        dir = DER;
+        player = 0;
+        game_mover_cursor(player,dir);
+
     }
     if(scanCode == 0x11){
         valor = 'w';
+        dir = ARB;
+        player = 0;
+        game_mover_cursor(player,dir);
+
     }
     //24 (J), 25 (K), 26 (L)
     if(scanCode ==0x17 ){
-        valor = 'i';    
+        valor = 'i';
+        dir = ARB;
+        player = 1;
+        game_mover_cursor(player,dir);
+
     }
     if(scanCode == 0x24){
-        valor = 'j';    
+        valor = 'j';
+        dir = IZQ;
+        player = 1;
+        game_mover_cursor(player,dir);
+
     }
     if(scanCode == 0x25){
-        valor ='k' ;    
+        valor ='k' ;
+        dir = ABA;
+        player = 1;
+        game_mover_cursor(player,dir);
+
     }
     if(scanCode == 0x26 ){
-        valor = 'l';    
+        valor = 'l';
+        dir = DER;
+        player = 1;
+        game_mover_cursor(player,dir);          
     }
 
     short ayylmao = (short) valor;

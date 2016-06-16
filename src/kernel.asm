@@ -22,6 +22,9 @@ extern tss_inicializar_idle
 
 extern sched_inicializar
 
+extern inicializar_pantalla
+
+extern inicializar_jugadores
 ;; Saltear seccion de datos
 jmp start
 
@@ -97,8 +100,11 @@ BITS 32
     ;mov ebx, 80     ;ebx = columnas
     ;imul ebx        ;eax = filas * columnas
 
-    call pintar_pantalla
-    imprimir_texto_mp nombre_grupo_msg, nombre_grupo_len, 0x0E, 0, 80 - nombre_grupo_len
+
+
+    call inicializar_pantalla
+    call inicializar_jugadores
+    ;imprimir_texto_mp nombre_grupo_msg, nombre_grupo_len, 0x0E, 0, 80 - nombre_grupo_len
 
     ; Inicializar el manejador de memoria
     call mmu_inicializar
@@ -218,6 +224,15 @@ pintar_pantalla:
         mov [ebx], ax
         add ebx, 2
     loop .limpiar_pantalla
+
+    ;pinto a los jugadores
+   
+
+
+    ;pinto a las tareas_sanas
+
+
+
 ret
 ;; -------------------------------------------------------------------------- ;;
 

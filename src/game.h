@@ -13,6 +13,11 @@
 #include "sched.h"
 
 typedef struct jugador_str {
+	unsigned int quien_soy; // 0= jugador A , 1= jugador B 
+	unsigned int contador_tareas; //Empieza en 20
+	unsigned int cuantas_infectadas_vivas;//Empiezan los dos en 0
+	unsigned short pos_x;//Empieza en la mitad de la pantalla 40 si es A, 41 si es B
+	unsigned short pos_y;//los dos empiezan en 20
 	
 } __attribute__((__packed__)) jugador;
 
@@ -27,6 +32,8 @@ void game_donde(unsigned short* pos);
 void game_mover_cursor(int jugador, direccion dir);
 
 void game_matar_tarea();
+
+void inicializar_jugadores();
 
 
 #endif  /* !__GAME_H__ */

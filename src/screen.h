@@ -25,6 +25,8 @@ void print(const char * text, unsigned int x, unsigned int y, unsigned short att
 void print_hex(unsigned int numero, int size, unsigned int x, unsigned int y, unsigned short attr);
 
 void print_int(unsigned int n, unsigned int x, unsigned int y, unsigned short attr);
+void inicializar_pantalla();
+void pintar_tarea_en_mapa(int jugador, unsigned short pos_x, unsigned short pos_y);
 
 
 #endif  /* !__SCREEN_H__ */

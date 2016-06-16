@@ -51,7 +51,62 @@ void print_int(unsigned int n, unsigned int x, unsigned int y, unsigned short at
     p[y][x].a = attr;
 }
 
+void inicializar_pantalla(){
+    unsigned int i;
+    unsigned int j;
 
 
+    for ( i = 0; i < 44; i++){
+        for ( j = 0; j < VIDEO_COLS; j++){
+            print_hex(0,1,j,i,(unsigned short)0x77);
+        }
+    }
+
+    for (i = 44; i < 50; i++){
+        for (j = 0; j < 80; j++){
+            print_hex(0,1,j,i,0);
+        }
+    }
+
+    //pinto jugador A y B
+
+    print_hex(10,1,40,20,(unsigned short) 0x4f);
+    print_hex(11,1,41,20,(unsigned short) 0x1f);
+    //imprimo las h
+    
+    print_hex(0,1,34,32,(unsigned short) 0x22);
+    print_hex(0,1,58,11,(unsigned short) 0x22);
+    print_hex(0,1,52,1,(unsigned short) 0x22);
+    print_hex(0,1,42,21,(unsigned short) 0x22);
+    print_hex(0,1,13,19,(unsigned short) 0x22);
+    print_hex(0,1,25,18,(unsigned short) 0x22);
+    print_hex(0,1,60,25,(unsigned short) 0x22);
+    print_hex(0,1,75,15,(unsigned short) 0x22);
+    print_hex(0,1,32,15,(unsigned short) 0x22);
+    print_hex(0,1,56,3,(unsigned short) 0x22);
+    print_hex(0,1,37,40,(unsigned short) 0x22);
+    print_hex(0,1,14,35,(unsigned short) 0x22);
+    print_hex(0,1,22,5,(unsigned short) 0x22);
+    print_hex(0,1,74,8,(unsigned short) 0x22);
+    print_hex(0,1,41,24,(unsigned short) 0x22);
+
+
+    for (i = 44; i < 50; i++){
+        for (j = 50; j < 57; j++){
+            print_hex(0,1,j,i,(unsigned short) 0x44);
+        }
+    }
+
+    for (i = 44; i < 50; i++){
+        for (j = 57; j < 64; j++){
+            print_hex(0,1,j,i,(unsigned short) 0x11);
+        }
+    }    
+
+}
+
+void pintar_tarea_en_mapa(int jugador, unsigned short pos_x, unsigned short pos_y){
+
+}
 
 
