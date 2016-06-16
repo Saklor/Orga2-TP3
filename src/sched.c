@@ -164,3 +164,25 @@ void sched_matar_tarea(unsigned char indice_tarea){
 	//Libero la entrada de la tss
 	tss_liberar_tarea(indice_tarea);
 }
+
+unsigned int sched_infectadas(unsigned char infectionID){
+	int i;
+	unsigned int infectadas;
+
+	for (i = 0; i < 15; i++) {
+		if (tareas_sanas[i].infectada == infectionID && tareas_sanas[i].esta_viva == 1)
+			infectadas++;
+	}
+
+	for (i = 0; i < 5; i++) {
+		if (tareas_a[i].infectada == infectionID && tareas_a[i].esta_viva == 1)
+			infectadas++;	
+	}
+
+	for (i = 0; i < 5; i++) {
+		if (tareas_b[i].infectada == infectionID && tareas_b[i].esta_viva == 1)
+			infectadas++;
+	}
+
+	return infectadas;
+}

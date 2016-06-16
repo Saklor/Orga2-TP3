@@ -26,6 +26,12 @@ void print(const char * text, unsigned int x, unsigned int y, unsigned short att
     }
 }
 
+void print_char(char  text, unsigned int x, unsigned int y, unsigned short attr) {
+    ca (*p)[VIDEO_COLS] = (ca (*)[VIDEO_COLS]) VIDEO_SCREEN;
+    p[y][x].c = (unsigned char) text;
+    p[y][x].a = (unsigned char) attr; 
+}
+
 void print_hex(unsigned int numero, int size, unsigned int x, unsigned int y, unsigned short attr) {
     ca (*p)[VIDEO_COLS] = (ca (*)[VIDEO_COLS]) VIDEO_SCREEN;
     int i;
@@ -94,9 +100,8 @@ void inicializar_pantalla(){
 
 
     //pinto jugador A y B
-
-    print_hex(10,1,40,20,(unsigned short) 0x4f);
-    print_hex(11,1,41,20,(unsigned short) 0x1f);
+    print_char(7,40,20,(unsigned short) 0x4f);
+    print_char(7,41,20,(unsigned short) 0x1f);
     //imprimo las h
     
     print_hex(0,1,34,32,(unsigned short) 0x22);
@@ -126,7 +131,22 @@ void inicializar_pantalla(){
         for (j = 57; j < 64; j++){
             print_hex(0,1,j,i,(unsigned short) 0x11);
         }
-    }    
+    }
+
+    char vidas[6]={'V','i','d','a','s',0};
+    char puntaje[8] = {'P','u','n','t','a','j','e',0};
+    
+    print(puntaje,54,45,(unsigned short) 0x0f);
+    print_int(0,53,47,(unsigned short) 0x4f);
+    print_int(0,60,47,(unsigned short) 0x1f);
+
+    print(vidas,44,46,(unsigned short) 0x0f);
+    print(vidas,65,46,(unsigned short) 0x0f);
+
+    print_int(20,46,48,(unsigned short) 0x0f);
+    print_int(20,67,48,(unsigned short) 0x0f);
+
+
 
 }
 

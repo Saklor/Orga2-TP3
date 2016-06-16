@@ -34,6 +34,8 @@ void sched_mapear(unsigned char indice_tarea, unsigned short tar_x, unsigned sho
 
 void sched_matar_tarea(unsigned char indice_tarea);
 
+unsigned int sched_infectadas(unsigned char infectionID);
+
 info_tarea* dame_info_a_partir_de_indice(unsigned char indice_tarea);
 
 #endif	/* !__SCHED_H__ */

@@ -14,6 +14,7 @@
 
 idt_entry idt[255] = { };
 
+
 idt_descriptor IDT_DESC = {
     sizeof(idt) - 1,
     (unsigned int) &idt
@@ -129,6 +130,13 @@ char manejo_teclado(char scanCode){
         dir = DER;
         player = 1;
         game_mover_cursor(player,dir);          
+    }
+    if(scanCode == 0x15){
+        //modo debug
+        valor = 'y';
+        //lanzar_modo_debug();
+       // print_char(1,40,20,(unsigned short) 0x4f);
+       // charc++;
     }
 
     short ayylmao = (short) valor;

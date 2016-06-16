@@ -58,9 +58,9 @@ void game_mover_cursor(int jugador, direccion dir) {
 	if(jugador == 0){
 		//Pinto lo que habia antes
 		if (misma_posicion == 0)
-			print_hex(pixel_anterior_jugadorA.c,1,(jugadorA.pos_x),jugadorA.pos_y, pixel_anterior_jugadorA.a);
+			print_char(pixel_anterior_jugadorA.c,(jugadorA.pos_x),jugadorA.pos_y, pixel_anterior_jugadorA.a);
 		else
-			print_hex(11,1,(jugadorA.pos_x),jugadorA.pos_y, 0x1f);
+			print_char(7,(jugadorA.pos_x),jugadorA.pos_y, 0x1f);
 
 		//Cambio la posicion solo si es valido el movimiento
 		if(dir == IZQ){
@@ -82,13 +82,13 @@ void game_mover_cursor(int jugador, direccion dir) {
 			pixel_anterior_jugadorA = pixel_anterior_jugadorB;
 		else
 			pixel_anterior_jugadorA = p[jugadorA.pos_y][jugadorA.pos_x];
-		print_hex(10,1,jugadorA.pos_x,jugadorA.pos_y,(unsigned short) 0x4f);
+		print_char(7,jugadorA.pos_x,jugadorA.pos_y,(unsigned short) 0x4f);
 	}else{
 		//Pinto lo que habia antes
 		if (misma_posicion == 0)
-			print_hex(pixel_anterior_jugadorB.c,1,(jugadorB.pos_x),jugadorB.pos_y, pixel_anterior_jugadorB.a);
+			print_char(pixel_anterior_jugadorB.c,(jugadorB.pos_x),jugadorB.pos_y, pixel_anterior_jugadorB.a);
 		else
-			print_hex(10,1,(jugadorB.pos_x),jugadorB.pos_y, 0x4f);
+			print_char(7,(jugadorB.pos_x),jugadorB.pos_y, 0x4f);
 
 		//Cambio la posicion solo si es valido el movimiento
 		if(dir == IZQ){
@@ -110,7 +110,7 @@ void game_mover_cursor(int jugador, direccion dir) {
 			pixel_anterior_jugadorB = pixel_anterior_jugadorA;
 		else
 			pixel_anterior_jugadorB = p[jugadorB.pos_y][jugadorB.pos_x];
-		print_hex(11,1,jugadorB.pos_x,jugadorB.pos_y,(unsigned short) 0x1f);
+		print_char(7,jugadorB.pos_x,jugadorB.pos_y,(unsigned short) 0x1f);
 
 	}
 }
@@ -123,16 +123,23 @@ void game_soy(unsigned int yoSoy) {
 	//yoSoy = 0: no infectado
 	//yoSoy = 1: infectado A
 	//yoSoy = 2: infectado B
+	unsigned short pos[2] = {0, 0};
+	unsigned short attr;
 
 	unsigned char indice_de_tarea = (unsigned char) (rtr() / 0x08);
 	sched_infectar(indice_de_tarea, yoSoy);
 
 	//Actualizar estructuras de control del juego
-	
-	
-	
-	//Actualizar en pantalla
+	jugadorA.cuantas_infectadas_vivas = sched_infectadas(1);
+	jugadorB.cuantas_infectadas_vivas = sched_infectadas(2);
 
+	//Actualizar en pantalla
+	sched_carga_pos_x_y(indice_de_tarea, pos);
+	if (yoSoy == 1)
+		attr = 0x1f;
+	else if (yoSoy == 2)
+		attr = 0x4f;
+	print_char(0, pos[0], pos[1], attr);
 }
 
 void game_donde(unsigned short* pos) {
@@ -145,7 +152,11 @@ void game_mapear(int x, int y) {
 	sched_mapear(indice_de_tarea, (unsigned short) x, (unsigned short) y);
 
 	//Actualizar en pantalla
-
+	// if(indice_de_tarea <= 27 && indice_de_tarea >= 23){
+	// 	print_hex(10,1,x,y,(unsigned short) 0x7f);
+	// }else if(indice_de_tarea > 27){
+	// 	print_hex(11,1,x,y,(unsigned short) 0x7f);
+	// }
 }
 
 void game_matar_tarea() {
