@@ -43,8 +43,8 @@ pushad
     ;Dejo todo esto porque debe servir para el modo debug
     mov eax, %1
 
-    ; pop edi
-    ; pop ebx ;ebx = EIP
+    pop edi
+    pop ebx ;ebx = EIP
 
     ; imprimir_texto_mp se_rompio_todo_msg, se_rompio_todo_len, 0x40, 1, 0
     ; imprimir_texto_mp excepcion_msg, excepcion_len, 0x40, 2, 0
@@ -147,7 +147,6 @@ global _isr33
 
 _isr33:
 pushad
-    xor edi,edi
     xor eax,eax
     in al, 0x60
     
@@ -169,8 +168,8 @@ iret
 %define VIRUS_ROJO 0x841
 %define VIRUS_AZUL 0x325
 
-global _isr66
-_isr66:
+global _isr102
+_isr102:
 pushad
     ;EAX = codigo
     ;EBX = primer parametro

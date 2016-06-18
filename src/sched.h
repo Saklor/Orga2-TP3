@@ -32,9 +32,13 @@ void sched_infectar(unsigned char indice_tarea, unsigned int inf);
 void sched_carga_pos_x_y(unsigned char indice_tarea, unsigned short* pos);
 void sched_mapear(unsigned char indice_tarea, unsigned short tar_x, unsigned short tar_y);
 
-void sched_matar_tarea(unsigned char indice_tarea);
+unsigned char sched_matar_tarea(unsigned char indice_tarea);
+void sched_lanzar(unsigned char tareaID, int x, int y);
 
+//Consultas
 unsigned int sched_infectadas(unsigned char infectionID);
+unsigned char sched_es_infectada(unsigned char indice_tarea);
+void sched_carga_target_x_y(unsigned char indice_tarea, unsigned short* pos);
 
 info_tarea* dame_info_a_partir_de_indice(unsigned char indice_tarea);
 

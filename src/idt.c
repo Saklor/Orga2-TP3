@@ -58,89 +58,76 @@ void idt_inicializar() {
     IDT_ENTRY(33);
     idt[33].attr = (unsigned short) 0x8E00;
 
-    IDT_ENTRY(66);
+    IDT_ENTRY(102);
+    idt[102].attr = (unsigned short) 0xEE00;
 }
 
 char manejo_teclado(char scanCode){
-    char valor;
+    char valor = 1;
     int player;
     direccion dir;
 
     if(scanCode == 0x2a){ 
         valor = '1';
+        game_lanzar(1);
 
-    }
-    if(scanCode == 0x36){
-        valor = '2'; 
+    } else if(scanCode == 0x36){
+        valor = '2';
+        game_lanzar(2);
 
-    }
-    if(scanCode == 0x1f){
+    } else if(scanCode == 0x1f){
         valor = 's'; 
         dir = ABA;
         player = 0;
         game_mover_cursor(player,dir);
 
-    }
-    //1e (A), 1f (S), 20 
-    if(scanCode == 0x1e){
+    } else if(scanCode == 0x1e){
         valor = 'a';
         dir = IZQ;
         player = 0;
         game_mover_cursor(player,dir);
 
-    }
-    if(scanCode == 0x20){
+    } else if(scanCode == 0x20){
         valor = 'd';
         dir = DER;
         player = 0;
         game_mover_cursor(player,dir);
 
-    }
-    if(scanCode == 0x11){
+    } else if(scanCode == 0x11){
         valor = 'w';
         dir = ARB;
         player = 0;
         game_mover_cursor(player,dir);
 
-    }
-    //24 (J), 25 (K), 26 (L)
-    if(scanCode ==0x17 ){
+    } else if(scanCode ==0x17 ){
         valor = 'i';
         dir = ARB;
         player = 1;
         game_mover_cursor(player,dir);
 
-    }
-    if(scanCode == 0x24){
+    } else if(scanCode == 0x24){
         valor = 'j';
         dir = IZQ;
         player = 1;
         game_mover_cursor(player,dir);
 
-    }
-    if(scanCode == 0x25){
+    } else if(scanCode == 0x25){
         valor ='k' ;
         dir = ABA;
         player = 1;
         game_mover_cursor(player,dir);
 
-    }
-    if(scanCode == 0x26 ){
+    } else if(scanCode == 0x26 ){
         valor = 'l';
         dir = DER;
         player = 1;
         game_mover_cursor(player,dir);          
-    }
-    if(scanCode == 0x15){
+    } else if(scanCode == 0x15){
         //modo debug
         valor = 'y';
         //lanzar_modo_debug();
-       // print_char(1,40,20,(unsigned short) 0x4f);
-       // charc++;
     }
-
-    short ayylmao = (short) valor;
-
-    print((char *)&ayylmao,79 ,0,(unsigned short)0x0E);
+    
+    print_char(valor, 79, 0, (unsigned short)0x0E);
     return valor;
 }

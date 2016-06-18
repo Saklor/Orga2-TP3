@@ -31,6 +31,7 @@ void pintar_tarea_en_mapa(int jugador, unsigned short pos_x, unsigned short pos_
 void screen_avanzar_reloj_tarea(unsigned char tareaID, unsigned char tarea_indice);
 
 void print_char(char  text, unsigned int x, unsigned int y, unsigned short attr); 
-
+void print_char_sin_attr(char text, unsigned int x, unsigned int y);
+void screen_pintar_sector(unsigned int x, unsigned int y, unsigned short attr);
 
 #endif  /* !__SCREEN_H__ */

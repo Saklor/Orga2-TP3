@@ -68,18 +68,18 @@ void inicializar_pantalla(){
     char* inicializacion_reloj_tareas_jugador = "x x x x x <A";
 
     for ( j = 0; j < VIDEO_COLS; j++){
-        print_hex(0,1,j,0,0);
+        print_char(0,j,0,0);
     }
 
     for ( i = 1; i <= 44; i++){
         for ( j = 0; j < VIDEO_COLS; j++){
-            print_hex(0,1,j,i,(unsigned short)0x77);
+            print_char(0,j,i,(unsigned short)0x7f);
         }
     }
 
     for (i = 45; i < 50; i++){
         for (j = 0; j < 80; j++){
-            print_hex(0,1,j,i,0);
+            print_char(0,j,i,0);
         }
     }
 
@@ -181,4 +181,14 @@ void screen_avanzar_reloj_tarea(unsigned char tareaID, unsigned char tarea_indic
     
     p[y][x_inicial + 2 * tarea_indice].c = texto_a_mostrar;
     p[y][x_inicial + 2 * tarea_indice].a = attr;
+}
+
+void screen_pintar_sector(unsigned int x, unsigned int y, unsigned short attr) {
+    ca (*p)[VIDEO_COLS] = (ca (*)[VIDEO_COLS]) VIDEO_SCREEN;
+    p[y][x].a = (unsigned char) attr; 
+}
+
+void print_char_sin_attr(char text, unsigned int x, unsigned int y) {
+    ca (*p)[VIDEO_COLS] = (ca (*)[VIDEO_COLS]) VIDEO_SCREEN;
+    p[y][x].c = (unsigned char) text;
 }

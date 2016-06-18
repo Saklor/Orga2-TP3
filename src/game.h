@@ -16,6 +16,7 @@ typedef struct jugador_str {
 	unsigned int quien_soy; // 0= jugador A , 1= jugador B 
 	unsigned int contador_tareas; //Empieza en 20
 	unsigned int cuantas_infectadas_vivas;//Empiezan los dos en 0
+	unsigned int tareas_lanzadas_vivas;
 	unsigned short pos_x;//Empieza en la mitad de la pantalla 40 si es A, 41 si es B
 	unsigned short pos_y;//los dos empiezan en 20
 	
@@ -23,7 +24,7 @@ typedef struct jugador_str {
 
 typedef enum direccion_e { IZQ = 0xAAA, DER = 0x441, ARB = 0xA33, ABA = 0x883  } direccion;
 
-void game_lanzar(unsigned int jugador);
+void game_lanzar(unsigned int jugadorID);
 
 void game_soy(unsigned int soy);
 
