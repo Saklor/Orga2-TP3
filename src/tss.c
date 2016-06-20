@@ -177,3 +177,13 @@ void tss_liberar_tarea(unsigned int indice_tarea){
 		}
 	}
 }
+
+void tss_remapear_tarea(unsigned char indice_tarea, unsigned short pos_x, unsigned short pos_y) {
+	unsigned int indice_vector_tareas = indice_tarea - 8;
+	unsigned int cr3_tarea;
+	unsigned int dir_a_mapear = (unsigned int) ( 0x400000 + (pos_x * 0x1000) + (pos_y * 0x80000) );
+
+	cr3_tarea = vectorTareas[indice_vector_tareas].cr3;
+
+	mmu_mapear_pagina((unsigned int) 0x08001000, cr3_tarea, dir_a_mapear, (unsigned char) 0x01);
+}

@@ -61,6 +61,6 @@ unsigned int tss_inicializar_tarea(char tareaID,short pos_x, short pos_y);
 
 unsigned int dame_proximo_indice(char tareaID);
 void tss_liberar_tarea(unsigned int indice_tarea);
-
+void tss_remapear_tarea(unsigned char indice_tarea, unsigned short pos_x, unsigned short pos_y);
 
 #endif  /* !__TSS_H__ */

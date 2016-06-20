@@ -34,4 +34,8 @@ void print_char(char  text, unsigned int x, unsigned int y, unsigned short attr)
 void print_char_sin_attr(char text, unsigned int x, unsigned int y);
 void screen_pintar_sector(unsigned int x, unsigned int y, unsigned short attr);
 
+void screen_pintar_puntaje(int jugador, int puntaje);
+void screen_pintar_vidas(int jugador, int vidas);
+
+
 #endif  /* !__SCREEN_H__ */

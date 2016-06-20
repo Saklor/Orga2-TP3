@@ -73,8 +73,8 @@ unsigned short sched_proximo_indice() {
 		} while (encontre_alguna == 0 && indice[turno] != indice_inicial);
 		if (encontre_alguna == 0){
 			turno = (turno + 1) % 3;
-			indice_inicial = indice[turno];
 			indice[turno] = (indice[turno] + 1) % indice_max[turno];
+			indice_inicial = indice[turno];
 			turnos_revisados++;
 		}
 	}
@@ -100,7 +100,6 @@ void sched_infectar(unsigned char indice_tarea, unsigned int inf){
 
 void sched_carga_pos_x_y(unsigned char indice_tarea, unsigned short* pos){
 	info_tarea* tarea = dame_info_a_partir_de_indice(indice_tarea);
-	breakpoint();
 	pos[0] = tarea->pos_x;
 	pos[1] = tarea->pos_y;
 }
@@ -109,6 +108,7 @@ void sched_mapear(unsigned char indice_tarea, unsigned short tar_x, unsigned sho
 	info_tarea* tarea = dame_info_a_partir_de_indice(indice_tarea);
 	tarea->target_x = tar_x;
 	tarea->target_y = tar_y;
+	tss_remapear_tarea(indice_tarea, tar_x, tar_y);
 }
 
 info_tarea* dame_info_a_partir_de_indice(unsigned char indice_tarea){
@@ -130,7 +130,7 @@ info_tarea* dame_info_a_partir_de_indice(unsigned char indice_tarea){
 			if(tareas_a[i].indice_gdt == indice_tarea)
 				resultado = &tareas_a[i];
 		}
-	} else if (indice_tarea >= 23 && indice_tarea <= 27){
+	} else if (indice_tarea >= 28 && indice_tarea <= 32){
 		//Tarea B
 		for (i = 0; i < 5; i++) {
 			if(tareas_b[i].indice_gdt == indice_tarea)

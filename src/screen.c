@@ -102,34 +102,33 @@ void inicializar_pantalla(){
     //pinto jugador A y B
     print_char(7,40,20,(unsigned short) 0x4f);
     print_char(7,41,20,(unsigned short) 0x1f);
-    //imprimo las h
     
-    print_hex(0,1,34,32,(unsigned short) 0x22);
-    print_hex(0,1,58,11,(unsigned short) 0x22);
-    print_hex(0,1,52,1,(unsigned short) 0x22);
-    print_hex(0,1,42,21,(unsigned short) 0x22);
-    print_hex(0,1,13,19,(unsigned short) 0x22);
-    print_hex(0,1,25,18,(unsigned short) 0x22);
-    print_hex(0,1,60,25,(unsigned short) 0x22);
-    print_hex(0,1,75,15,(unsigned short) 0x22);
-    print_hex(0,1,32,15,(unsigned short) 0x22);
-    print_hex(0,1,56,3,(unsigned short) 0x22);
-    print_hex(0,1,37,40,(unsigned short) 0x22);
-    print_hex(0,1,14,35,(unsigned short) 0x22);
-    print_hex(0,1,22,5,(unsigned short) 0x22);
-    print_hex(0,1,74,8,(unsigned short) 0x22);
-    print_hex(0,1,41,24,(unsigned short) 0x22);
+    //imprimo las h
+    print_char(0,34,32,(unsigned short) 0x2f);
+    print_char(0,58,11,(unsigned short) 0x2f);
+    print_char(0,52,1,(unsigned short) 0x2f);
+    print_char(0,42,21,(unsigned short) 0x2f);
+    print_char(0,13,19,(unsigned short) 0x2f);
+    print_char(0,25,18,(unsigned short) 0x2f);
+    print_char(0,60,25,(unsigned short) 0x2f);
+    print_char(0,75,15,(unsigned short) 0x2f);
+    print_char(0,32,15,(unsigned short) 0x2f);
+    print_char(0,56,3,(unsigned short) 0x2f);
+    print_char(0,37,40,(unsigned short) 0x2f);
+    print_char(0,14,35,(unsigned short) 0x2f);
+    print_char(0,22,5,(unsigned short) 0x2f);
+    print_char(0,74,8,(unsigned short) 0x2f);
+    print_char(0,41,24,(unsigned short) 0x2f);
 
-
-    for (i = 45; i < 50; i++){
+   for (i = 45; i < 50; i++){
         for (j = 50; j < 57; j++){
-            print_hex(0,1,j,i,(unsigned short) 0x44);
+            print_char(0,j,i,(unsigned short) 0x4f);
         }
     }
 
     for (i = 45; i < 50; i++){
         for (j = 57; j < 64; j++){
-            print_hex(0,1,j,i,(unsigned short) 0x11);
+            print_char(0,j,i,(unsigned short) 0x1f);
         }
     }
 
@@ -137,17 +136,42 @@ void inicializar_pantalla(){
     char puntaje[8] = {'P','u','n','t','a','j','e',0};
     
     print(puntaje,54,45,(unsigned short) 0x0f);
-    print_int(0,53,47,(unsigned short) 0x4f);
-    print_int(0,60,47,(unsigned short) 0x1f);
+    screen_pintar_puntaje(1, 0);
+    screen_pintar_puntaje(2, 0);
 
     print(vidas,44,46,(unsigned short) 0x0f);
     print(vidas,65,46,(unsigned short) 0x0f);
 
-    print_int(20,46,48,(unsigned short) 0x0f);
-    print_int(20,67,48,(unsigned short) 0x0f);
+    screen_pintar_vidas(1, 20);
+    screen_pintar_vidas(2, 20);
+}
 
+void screen_pintar_puntaje(int jugador, int puntaje){
+    unsigned short attr;
+    unsigned int x;
+    if (jugador == 1){
+        attr = 0x4f;
+        x = 53;
+    } else {
+        attr = 0x1f;
+        x = 60;
+    }
 
+    print_int(puntaje,x,47,attr);
+}
 
+void screen_pintar_vidas(int jugador, int vidas){
+    unsigned short attr;
+    unsigned int x;
+    if (jugador == 1){
+        attr = 0x4f;
+        x = 46;
+    } else {
+        attr = 0x1f;
+        x = 67;
+    }
+
+    print_int(vidas,x,48,attr);
 }
 
 void pintar_tarea_en_mapa(int jugador, unsigned short pos_x, unsigned short pos_y){

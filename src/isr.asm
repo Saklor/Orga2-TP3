@@ -245,5 +245,5 @@ proximo_reloj:
 sched_idle:
 pushad
     jmp 0x38:0x04201337
-    ret
 popad
+ret

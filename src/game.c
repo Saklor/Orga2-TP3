@@ -219,7 +219,7 @@ void game_mapear(int x, int y) {
 	if (jugadorB.pos_x == x && jugadorB.pos_y == (y + 1))
 		pixel_anterior_jugadorB.c = letra;
 	if ((jugadorA.pos_x != x || jugadorA.pos_y != (y + 1)) && (jugadorB.pos_x != x || jugadorB.pos_y != (y + 1)))
-		print_char_sin_attr(letra,x,y);
+		print_char_sin_attr(letra,x,(y + 1));
 
 	if (jugadorA.pos_x == target_anterior[0] && jugadorA.pos_y == target_anterior[1])
 		pixel_anterior_jugadorA.c = 0;
