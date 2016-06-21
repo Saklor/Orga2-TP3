@@ -125,7 +125,7 @@ void game_lanzar(unsigned int jugadorID) {
 	else
 		jugador_que_lanza = &jugadorB;
 
-	if (jugador_que_lanza->contador_tareas > 0){
+	if (jugador_que_lanza->contador_tareas > 0 && jugador_que_lanza->tareas_lanzadas_vivas < 5){
 		sched_lanzar(jugadorID, jugador_que_lanza->pos_x, jugador_que_lanza->pos_y);
 
 		jugador_que_lanza->tareas_lanzadas_vivas++;
@@ -145,6 +145,9 @@ void game_lanzar(unsigned int jugadorID) {
 			pixel_anterior_jugadorA.a = attr;
 		if (jugadorB.pos_x == jugador_que_lanza->pos_x && jugadorB.pos_y == jugador_que_lanza->pos_y)
 			pixel_anterior_jugadorB.a = attr;
+
+		screen_pintar_vidas(jugadorID, jugador_que_lanza->contador_tareas);
+		screen_pintar_puntaje(jugadorID, jugador_que_lanza->cuantas_infectadas_vivas);
 
 		//
 	} else {
@@ -181,6 +184,9 @@ void game_soy(unsigned int yoSoy) {
 	
 	if ((jugadorA.pos_x != pos[0] || jugadorA.pos_y != pos[1]) && (jugadorB.pos_x != pos[0] || jugadorB.pos_y != pos[1]))
 		screen_pintar_sector(pos[0], pos[1], attr);
+
+	screen_pintar_puntaje(1, jugadorA.cuantas_infectadas_vivas);
+	screen_pintar_puntaje(2, jugadorB.cuantas_infectadas_vivas);
 }
 
 void game_donde(unsigned short* pos) {

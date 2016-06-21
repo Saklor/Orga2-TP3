@@ -66,6 +66,8 @@ void inicializar_pantalla(){
     unsigned int i;
     unsigned int j;
     char* inicializacion_reloj_tareas_jugador = "x x x x x <A";
+    unsigned short tareas_sanas_pos_x[15] = {34,58,52,42,13,25,60,75,32,56,37,14,22,74,41};
+    unsigned short tareas_sanas_pos_y[15] = {32,11,1,21,29,18,25,15,15,3,40,35,5,8,24};
 
     for ( j = 0; j < VIDEO_COLS; j++){
         print_char(0,j,0,0);
@@ -104,21 +106,24 @@ void inicializar_pantalla(){
     print_char(7,41,20,(unsigned short) 0x1f);
     
     //imprimo las h
-    print_char(0,34,32,(unsigned short) 0x2f);
-    print_char(0,58,11,(unsigned short) 0x2f);
-    print_char(0,52,1,(unsigned short) 0x2f);
-    print_char(0,42,21,(unsigned short) 0x2f);
-    print_char(0,13,19,(unsigned short) 0x2f);
-    print_char(0,25,18,(unsigned short) 0x2f);
-    print_char(0,60,25,(unsigned short) 0x2f);
-    print_char(0,75,15,(unsigned short) 0x2f);
-    print_char(0,32,15,(unsigned short) 0x2f);
-    print_char(0,56,3,(unsigned short) 0x2f);
-    print_char(0,37,40,(unsigned short) 0x2f);
-    print_char(0,14,35,(unsigned short) 0x2f);
-    print_char(0,22,5,(unsigned short) 0x2f);
-    print_char(0,74,8,(unsigned short) 0x2f);
-    print_char(0,41,24,(unsigned short) 0x2f);
+    for (i  = 0; i < 15; i++){
+        print_char(0, (unsigned int) tareas_sanas_pos_x[i], (unsigned int) tareas_sanas_pos_y[i], (unsigned short) 0x2f);
+    }
+    // print_char(0,34,32,(unsigned short) 0x2f);
+    // print_char(0,58,11,(unsigned short) 0x2f);
+    // print_char(0,52,1,(unsigned short) 0x2f);
+    // print_char(0,42,21,(unsigned short) 0x2f);
+    // print_char(0,13,19,(unsigned short) 0x2f);
+    // print_char(0,25,18,(unsigned short) 0x2f);
+    // print_char(0,60,25,(unsigned short) 0x2f);
+    // print_char(0,75,15,(unsigned short) 0x2f);
+    // print_char(0,32,15,(unsigned short) 0x2f);
+    // print_char(0,56,3,(unsigned short) 0x2f);
+    // print_char(0,37,40,(unsigned short) 0x2f);
+    // print_char(0,14,35,(unsigned short) 0x2f);
+    // print_char(0,22,5,(unsigned short) 0x2f);
+    // print_char(0,74,8,(unsigned short) 0x2f);
+    // print_char(0,41,24,(unsigned short) 0x2f);
 
    for (i = 45; i < 50; i++){
         for (j = 50; j < 57; j++){
@@ -181,7 +186,6 @@ void pintar_tarea_en_mapa(int jugador, unsigned short pos_x, unsigned short pos_
 void screen_avanzar_reloj_tarea(unsigned char tareaID, unsigned char tarea_indice){
     ca (*p)[VIDEO_COLS] = (ca (*)[VIDEO_COLS]) VIDEO_SCREEN;
     unsigned char texto_a_mostrar;
-    unsigned char attr = 0x07;
     unsigned char y;
     unsigned char x_inicial;
 
@@ -204,7 +208,27 @@ void screen_avanzar_reloj_tarea(unsigned char tareaID, unsigned char tarea_indic
         
     
     p[y][x_inicial + 2 * tarea_indice].c = texto_a_mostrar;
-    p[y][x_inicial + 2 * tarea_indice].a = attr;
+    p[y][x_inicial + 2 * tarea_indice].a = 0x07;
+}
+
+void screen_resetear_reloj_tarea(unsigned char tareaID, unsigned char tarea_indice){
+    ca (*p)[VIDEO_COLS] = (ca (*)[VIDEO_COLS]) VIDEO_SCREEN;
+    unsigned char y;
+    unsigned char x_inicial;
+
+    if (tareaID == 0){
+        y = 48;
+        x_inicial = 4;
+    } else if (tareaID == 1){
+        y = 46;
+        x_inicial = 4;
+    } else {
+        y = 46;
+        x_inicial = 24;
+    }
+
+    p[y][x_inicial + 2 * tarea_indice].c = 'x';
+    p[y][x_inicial + 2 * tarea_indice].a = 0x07;
 }
 
 void screen_pintar_sector(unsigned int x, unsigned int y, unsigned short attr) {

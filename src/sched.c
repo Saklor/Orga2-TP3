@@ -154,12 +154,15 @@ unsigned char sched_matar_tarea(unsigned char indice_tarea){
 
 	if (indice_tarea >= 8 && indice_tarea <= 22){
 		//Tarea sana
+		screen_resetear_reloj_tarea(0, indice_tarea-8);
 		return 0;
 	} else if (indice_tarea >= 23 && indice_tarea <= 27){
 		//Tarea A
+		screen_resetear_reloj_tarea(1, indice_tarea-23);
 		return 1;
-	} else if (indice_tarea >= 23 && indice_tarea <= 27){
+	} else if (indice_tarea >= 28 && indice_tarea <= 32){
 		//Tarea B
+		screen_resetear_reloj_tarea(2, indice_tarea-28);
 		return 2;
 	}
 
@@ -168,7 +171,7 @@ unsigned char sched_matar_tarea(unsigned char indice_tarea){
 
 unsigned int sched_infectadas(unsigned char infectionID){
 	int i;
-	unsigned int infectadas;
+	unsigned int infectadas = 0;
 
 	for (i = 0; i < 15; i++) {
 		if (tareas_sanas[i].infectada == infectionID && tareas_sanas[i].esta_viva == 1)

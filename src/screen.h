@@ -29,6 +29,7 @@ void inicializar_pantalla();
 void pintar_tarea_en_mapa(int jugador, unsigned short pos_x, unsigned short pos_y);
 
 void screen_avanzar_reloj_tarea(unsigned char tareaID, unsigned char tarea_indice);
+void screen_resetear_reloj_tarea(unsigned char tareaID, unsigned char tarea_indice);
 
 void print_char(char  text, unsigned int x, unsigned int y, unsigned short attr); 
 void print_char_sin_attr(char text, unsigned int x, unsigned int y);
