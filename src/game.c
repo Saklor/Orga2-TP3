@@ -235,7 +235,7 @@ void game_mapear(int x, int y) {
 		print_char_sin_attr(0,target_anterior[0],target_anterior[1]);	
 }
 
-void game_matar_tarea() {
+unsigned char game_matar_tarea() {
 	unsigned short pos[2] = {0, 0};
 	unsigned short target[2] = {0, 0};
 	unsigned char tareaID_matada = 0;
@@ -269,6 +269,11 @@ void game_matar_tarea() {
 	if (jugadorB.pos_x == target[0] && jugadorB.pos_y == target[1])
 		pixel_anterior_jugadorB.c = 0;
 	if ((jugadorA.pos_x != target[0] || jugadorA.pos_y != target[1]) && (jugadorB.pos_x != target[0] || jugadorB.pos_y != target[1]))
-		print_char_sin_attr(0,target[0],target[1]);	
+		print_char_sin_attr(0,target[0],target[1]);
+
+	screen_pintar_puntaje(1, jugadorA.cuantas_infectadas_vivas);
+	screen_pintar_puntaje(2, jugadorB.cuantas_infectadas_vivas);
+
+	return tareaID_matada;
 }
 

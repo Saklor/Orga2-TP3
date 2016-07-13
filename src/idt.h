@@ -26,9 +26,10 @@ typedef struct str_idt_entry_fld {
 
 extern idt_entry idt[];
 extern idt_descriptor IDT_DESC;
+extern void lanzar_modo_debug();
 
 void idt_inicializar();
-char manejo_teclado(char scanCode);
+void manejo_teclado(char scanCode, char debug_en_screen);
 
 
 #endif  /* !__IDT_H__ */

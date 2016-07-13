@@ -24,6 +24,8 @@ extern manejo_teclado
 
 ;;Extra para interrupciones
 extern print_hex
+extern imprimo_interrupcion_pantalla
+extern restauro_pantalla
 
 ;; Game
 extern game_soy
@@ -39,12 +41,29 @@ extern game_matar_tarea
 global _isr%1
 
 _isr%1:
+sub esp, 4
 pushad
-    ;Dejo todo esto porque debe servir para el modo debug
     mov eax, %1
 
-    pop edi
-    pop ebx ;ebx = EIP
+    cmp eax, 0xA
+    je .error_code
+    cmp eax, 0xB
+    je .error_code
+    cmp eax, 0xC
+    je .error_code
+    cmp eax, 0xD
+    je .error_code
+    cmp eax, 0xE
+    je .error_code
+    jmp .no_error_code
+
+    .error_code:
+    ; Borro el error code si es que lo hay
+    popad
+    add esp, 4
+    pushad
+
+    .no_error_code:
 
     ; imprimir_texto_mp se_rompio_todo_msg, se_rompio_todo_len, 0x40, 1, 0
     ; imprimir_texto_mp excepcion_msg, excepcion_len, 0x40, 2, 0
@@ -67,16 +86,42 @@ pushad
 
     ; push ebx
     ; push edi
-
-    ; jmp $
-
-    ; xchg bx, bx
-    call game_matar_tarea
-
     call fin_intr_pic1
 
+    call game_matar_tarea   ;EAX = ID_TAREA (1 para jugador A, 2 para jugador B)
+    mov [esp + 32], eax
+
+
+    cmp BYTE [modo_debug], 0
+    je .no_debug
+
+    xor ecx, ecx
+    inc ecx
+    mov [debug_en_screen], cl
+
+    popad
+    ; push eflags
+    ; push ss
+    push gs
+    push fs
+    push es
+    push ds
+    ; push cs
+    ; push eip
+    ; push esp
+    push ebp
+    push edi
+    push esi
+    push edx
+    push ecx
+    push ebx
+    push eax
+    call imprimo_interrupcion_pantalla
+    add esp, 44
+
+    .no_debug:
     call sched_idle
-popad
+; popad
 iret
 
 %endmacro
@@ -98,24 +143,33 @@ excepcion_len       equ     $ - excepcion_msg
 posicion_msg        db      'Posicion: 0x'
 posicion_len        equ     $ - posicion_msg
 
+modo_debug          db 0
+debug_en_screen     db 0
+
 ;;
 ;; Rutina de atención de las EXCEPCIONES
 ;; -------------------------------------------------------------------------- ;;
-ISR 0   ;Divison Error
-ISR 1   ;Divison Error
-;ISR 2   ;Divison Error
-;ISR 3   ;Divison Error
-;ISR 4   ;Divison Error
-;ISR 5   ;Divison Error
-;ISR 6   ;Divison Error
-;ISR 7   ;Divison Error
-;ISR 8   ;Divison Error
-;ISR 9   ;Divison Error
+ISR 0
+ISR 1
+ISR 2
+ISR 3
+ISR 4
+ISR 5
+ISR 6
+ISR 7
+ISR 8
+ISR 9
 ISR 10
-;ISR 11   ;Divison Error
-ISR 12   ;Divison Error
-ISR 13   ;Divison Error
+ISR 11
+ISR 12
+ISR 13
 ISR 14
+ISR 15
+ISR 16
+ISR 17
+ISR 18
+ISR 19
+ISR 20
 
 ;;
 ;; Rutina de atención del RELOJ
@@ -123,6 +177,10 @@ ISR 14
 global _isr32
 _isr32:
 pushad
+    
+    ; En modo debug el scheduler no salta a otra tarea si hay una impresion en pantalla de una excepcion
+    cmp BYTE [debug_en_screen], 0
+    jne .nojump
 
     call proximo_reloj
 
@@ -148,11 +206,16 @@ global _isr33
 _isr33:
 pushad
     xor eax,eax
+    xor ebx, ebx
+
     in al, 0x60
-    
+    mov bl, [debug_en_screen]
+
+    push ebx
     push eax
     call manejo_teclado
     pop eax
+    pop ebx
 
     call fin_intr_pic1
 popad
@@ -246,4 +309,37 @@ sched_idle:
 pushad
     jmp 0x38:0x04201337
 popad
+ret
+
+global lanzar_modo_debug
+lanzar_modo_debug:
+
+push eax
+
+; Si no estoy en modo debug, entonces activo modo debug
+cmp BYTE [modo_debug], 0
+je .activar_md
+; Si estoy en modo debug, pero no tengo nada en screen, lo desactivo
+cmp BYTE [debug_en_screen], 0
+je .desactivar_md
+; Si llego aca es porque hay algo impreso en pantalla, asi que lo limpio
+jmp .limpio_pantalla
+
+.activar_md:
+    xor eax, eax
+    inc eax
+    mov [modo_debug], al
+jmp .fin
+
+.desactivar_md:
+    xor eax, eax
+    mov [modo_debug], al
+jmp .fin
+
+.limpio_pantalla:
+    call restauro_pantalla
+    xor eax, eax
+    mov [debug_en_screen], al
+.fin
+pop eax
 ret

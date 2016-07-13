@@ -14,6 +14,7 @@
 
 #include "colors.h"
 #include "defines.h"
+#include "i386.h"
 /* Estructura de para acceder a memoria de video */
 typedef struct ca_s {
     unsigned char c;
@@ -26,7 +27,7 @@ void print_hex(unsigned int numero, int size, unsigned int x, unsigned int y, un
 
 void print_int(unsigned int n, unsigned int x, unsigned int y, unsigned short attr);
 void inicializar_pantalla();
-void pintar_tarea_en_mapa(int jugador, unsigned short pos_x, unsigned short pos_y);
+// void pintar_tarea_en_mapa(int jugador, unsigned short pos_x, unsigned short pos_y);
 
 void screen_avanzar_reloj_tarea(unsigned char tareaID, unsigned char tarea_indice);
 void screen_resetear_reloj_tarea(unsigned char tareaID, unsigned char tarea_indice);
@@ -38,5 +39,10 @@ void screen_pintar_sector(unsigned int x, unsigned int y, unsigned short attr);
 void screen_pintar_puntaje(int jugador, int puntaje);
 void screen_pintar_vidas(int jugador, int vidas);
 
+void imprimo_interrupcion_pantalla(
+    int eax, int ebx, int ecx, int edx, int esi, int edi, int ebp,
+    int ds,  int es,  int fs,  int gs, unsigned char idTarea,
+    int eip, int cs, int eflags, int esp, int ss);
+void restauro_pantalla();
 
 #endif  /* !__SCREEN_H__ */

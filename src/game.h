@@ -32,7 +32,7 @@ void game_donde(unsigned short* pos);
 
 void game_mover_cursor(int jugador, direccion dir);
 
-void game_matar_tarea();
+unsigned char game_matar_tarea();
 
 void inicializar_jugadores();
 

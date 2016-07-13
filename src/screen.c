@@ -10,6 +10,7 @@
 char valores[4] = "|/-\\";
 unsigned char reloj_actual_sanas[15];
 unsigned char reloj_actual_jugadores[2][5];
+unsigned short pantalla_guardada[4000] = { };
 
 
 void print(const char * text, unsigned int x, unsigned int y, unsigned short attr) {
@@ -68,6 +69,10 @@ void inicializar_pantalla(){
     char* inicializacion_reloj_tareas_jugador = "x x x x x <A";
     unsigned short tareas_sanas_pos_x[15] = {34,58,52,42,13,25,60,75,32,56,37,14,22,74,41};
     unsigned short tareas_sanas_pos_y[15] = {32,11,1,21,29,18,25,15,15,3,40,35,5,8,24};
+
+    for ( i = 0; i < 4000; i++){
+        pantalla_guardada[i] = (unsigned short) 0;
+    }
 
     for ( j = 0; j < VIDEO_COLS; j++){
         print_char(0,j,0,0);
@@ -179,9 +184,9 @@ void screen_pintar_vidas(int jugador, int vidas){
     print_int(vidas,x,48,attr);
 }
 
-void pintar_tarea_en_mapa(int jugador, unsigned short pos_x, unsigned short pos_y){
+// void pintar_tarea_en_mapa(int jugador, unsigned short pos_x, unsigned short pos_y){
 
-}
+// }
 
 void screen_avanzar_reloj_tarea(unsigned char tareaID, unsigned char tarea_indice){
     ca (*p)[VIDEO_COLS] = (ca (*)[VIDEO_COLS]) VIDEO_SCREEN;
@@ -239,4 +244,115 @@ void screen_pintar_sector(unsigned int x, unsigned int y, unsigned short attr) {
 void print_char_sin_attr(char text, unsigned int x, unsigned int y) {
     ca (*p)[VIDEO_COLS] = (ca (*)[VIDEO_COLS]) VIDEO_SCREEN;
     p[y][x].c = (unsigned char) text;
+}
+
+void imprimo_interrupcion_pantalla(
+    int eax, int ebx, int ecx, int edx, int esi, int edi, int ebp,
+    int ds,  int es,  int fs,  int gs, unsigned char idTarea,
+    int eip, int cs, int eflags, int esp, int ss) {
+    ca (*p)[VIDEO_COLS] = (ca (*)[VIDEO_COLS]) VIDEO_SCREEN;
+    ca (*p_guardada)[VIDEO_COLS] = (ca (*)[VIDEO_COLS]) &pantalla_guardada;
+    unsigned int i, j;
+
+    unsigned char color_tarea;
+    char* texto = "TAREA SANA";
+
+    if (idTarea == 1){
+        color_tarea = 0x4f;
+        texto = "TAREA A";
+    }
+    else if (idTarea == 2){
+        color_tarea = 0x1f;
+        texto = "TAREA B";
+    }
+    else {
+        color_tarea = 0x2f;
+    }
+
+    // Guardo pantalla
+    for (i = 0; i < 50; i++) {
+        for (j = 0; j < 80; j++){
+            p_guardada[i][j] = p[i][j];
+        }
+    }
+
+    // Hago espacio gris en el medio
+    for (i = 25; i < 55; i++) {
+        for (j = 7; j < 43; j++){
+            if (i == 25 || i == 54 || j == 7 || j == 42)
+                print_char(0,i,j,(unsigned short) 0x0f);
+            else
+                print_char(0,i,j,(unsigned short) 0x7f);
+        }
+    }
+
+    i = 8;
+    for (j = 26; j < 54; j++){
+        print_char(0,j,i,(unsigned short) color_tarea);
+    }
+    print(texto, 26, 8, color_tarea);
+    // print_int((unsigned int)idTarea, 0, 0, 0x0f);
+
+    print("eax", 27, 10, 0x70);
+    print("ebx", 27, 12, 0x70);
+    print("ecx", 27, 14, 0x70);
+    print("edx", 27, 16, 0x70);
+    print("esi", 27, 18, 0x70);
+    print("edi", 27, 20, 0x70);
+    print("ebp", 27, 22, 0x70);
+    print("esp", 27, 24, 0x70);
+    print("eip", 27, 26, 0x70);
+    print("cs", 28, 28, 0x70);
+    print("ds", 28, 30, 0x70);
+    print("es", 28, 32, 0x70);
+    print("fs", 28, 34, 0x70);
+    print("gs", 28, 36, 0x70);
+    print("ss", 28, 38, 0x70);
+    print("eflags", 28, 40, 0x70);
+    print("cr0", 41, 10, 0x70);
+    print("cr2", 41, 12, 0x70);
+    print("cr3", 41, 14, 0x70);
+    print("cr4", 41, 16, 0x70);
+    print("stack", 41, 27, 0x70);
+
+    print_hex(eax, 8, 31, 10, 0x7f);
+    print_hex(ebx, 8, 31, 12, 0x7f);
+    print_hex(ecx, 8, 31, 14, 0x7f);
+    print_hex(edx, 8, 31, 16, 0x7f);
+    print_hex(esi, 8, 31, 18, 0x7f);
+    print_hex(edi, 8, 31, 20, 0x7f);
+    print_hex(ebp, 8, 31, 22, 0x7f);
+    print_hex(esp, 8, 31, 24, 0x7f);
+    print_hex(eip, 8, 31, 26, 0x7f);
+    print_hex(cs,  4, 31, 28, 0x7f);
+    print_hex(ds,  4, 31, 30, 0x7f);
+    print_hex(es,  4, 31, 32, 0x7f);
+    print_hex(fs,  4, 31, 34, 0x7f);
+    print_hex(gs,  4, 31, 36, 0x7f);
+    print_hex(ss,  4, 31, 38, 0x7f);
+    print_hex(eflags, 8, 35, 40, 0x7f);
+    print_hex(rcr0(), 8, 45, 10, 0x7f);
+    print_hex(rcr2(), 8, 45, 12, 0x7f);
+    print_hex(rcr3(), 8, 45, 14, 0x7f);
+    print_hex(rcr4(), 8, 45, 16, 0x7f);
+
+    unsigned int* stack;
+    i = 29;
+    while(esp < ebp){
+        stack = (unsigned int*) esp;
+        print_hex((*stack), 8, 41, i, 0x7f);
+        esp += 32;
+        i += 2;
+    }
+}
+
+void restauro_pantalla(){
+    ca (*p)[VIDEO_COLS] = (ca (*)[VIDEO_COLS]) VIDEO_SCREEN;
+    ca (*p_guardada)[VIDEO_COLS] = (ca (*)[VIDEO_COLS]) pantalla_guardada;
+    unsigned int i, j;
+    for (i = 0; i < 50; i++) {
+        for (j = 0; j < 80; j++){
+            p[i][j] = p_guardada[i][j];
+        }
+    }
 }

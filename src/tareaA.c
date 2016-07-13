@@ -33,6 +33,7 @@ void task() {
   syscall_donde(pos);
   unsigned int* yo = (unsigned int*)(0x08000000);
   unsigned int* otro = (unsigned int*)(0x08000000+0x1000);
+
   while(1) { 
     for(y=pos[1];y<44;y++) {
       for(x=pos[0];x<80;x++) {
